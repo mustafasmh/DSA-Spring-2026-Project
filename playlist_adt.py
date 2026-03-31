@@ -49,7 +49,7 @@ def display_playlist(playlist):
 
     while True:
         song = current["data"]
-        mins = song["duration"] // 60
+        mins = song["duration"] // 60 #
         secs = song["duration"] % 60
         print(f"{number}. {song["title"]} - {song["artist"]} | {song["genre"]} | {mins}:{secs:02d}") 
 
