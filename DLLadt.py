@@ -186,34 +186,34 @@ def search(lst,key,value):
 
 
 
-# create a list and add 3 songs
-playlist = create_list()
-insertEnd(playlist, {"title": "What lurks in the Forest", "artist": "Akira Yamaoka"})
-insertEnd(playlist, {"title": "In my time of need", "artist": "Opeth"})
-insertEnd(playlist, {"title": "Opiate^2", "artist": "TOOL"})
-insertEnd(playlist, {"title": "Hope Leaves", "artist": "Opeth"})
+# # create a list and add 3 songs
+# playlist = create_list()
+# insertEnd(playlist, {"title": "What lurks in the Forest", "artist": "Akira Yamaoka"})
+# insertEnd(playlist, {"title": "In my time of need", "artist": "Opeth"})
+# insertEnd(playlist, {"title": "Opiate^2", "artist": "TOOL"})
+# insertEnd(playlist, {"title": "Hope Leaves", "artist": "Opeth"})
 
-# should print A, B, C
-traverse(playlist)
+# # should print A, B, C
+# traverse(playlist)
 
-# should print C, B, A
-traverseback(playlist)
+# # should print C, B, A
+# traverseback(playlist)
 
-# should return Song B's node
-result=search(playlist, "artist", "TOOL")
+# # should return Song B's node
+# result=search(playlist, "artist", "TOOL")
 
-print(result["data"])
+# print(result["data"])
 
-# delete Song B then traverse, should print A, C
-delete_node(playlist, result)
+# # delete Song B then traverse, should print A, C
+# delete_node(playlist, result)
 
-result=search(playlist, "artist", "Opeth")
-delete_node(playlist, result)
+# result=search(playlist, "artist", "Opeth")
+# delete_node(playlist, result)
 
-traverse(playlist)
+# traverse(playlist)
 
-# size should be 2
-print(playlist["size"])
+# # size should be 2
+# print(playlist["size"])
 
 
 
