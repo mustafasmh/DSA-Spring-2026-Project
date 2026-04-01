@@ -1,6 +1,6 @@
 # File for testing 
 
-from playlist_adt import *
+from playlist import *
 
 playlist = create_playlist()
 add_song(playlist, "Blinding Lights", "The Weeknd", 200, "Pop")
