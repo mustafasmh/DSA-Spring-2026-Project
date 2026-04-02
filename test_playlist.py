@@ -41,6 +41,10 @@ shuffle(playlist)
 display_playlist(playlist)
 print("\n")
 print("\n")
+sortby(playlist, "title")
+display_playlist(playlist)
+print("\n")
+print("\n")
 # should show 3 Weeknd songs
 get_artist_songs(playlist, "The Weeknd")
 print("\n")
@@ -54,8 +58,7 @@ print("\n")
 remove_song(playlist, "Blinding Lights")
 get_artist_songs(playlist, "The Weeknd")  # should show Save Your Tears
 print("\n") 
-<<<<<<< HEAD
-=======
+
 print("\n")
 # delete only remaining song by artist
 remove_song(playlist, "Save Your Tears")
@@ -63,13 +66,7 @@ get_artist_songs(playlist, "The Weeknd")  # should print Artist not found
 
 
 print("\n")
->>>>>>> 2076e0ce70362413253a022eacfcca0e88349d13
 print("\n")
 # delete only remaining song by artist
 remove_song(playlist, "Save Your Tears")
 get_artist_songs(playlist, "The Weeknd")  # should print Artist not found
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 2076e0ce70362413253a022eacfcca0e88349d13

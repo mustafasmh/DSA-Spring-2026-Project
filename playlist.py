@@ -221,11 +221,44 @@ def shuffle(playlist):
             current=current["next"]
 
     
+def sortby(playlist, field):
 
+    arr=[]
+    current=playlist["head"]
+
+    if playlist["size"]!=0:
+
+        while True:
+
+            arr+=[current["data"]] 
+            if current==playlist["tail"]:
+                break
+            current=current["next"]
     
+    mergeSort(arr, 0, len(arr)-1, field)
+
+    current=playlist["head"]
+
+    for node in arr: #replacing playlist with sorted nodes
+
+        current["data"]=node
+        if current==playlist["tail"]:
+            break
+        current=current["next"]
+
+    playlist["artist_head"] = {} #clearing artist chain
+    playlist["artist_tail"] = {}
+
+    current=playlist["head"]
+    while True:
+        
+        artist_chain(playlist, current) #rebuilding artist chain
+        
+        if current==playlist["tail"]:
+            break
+        current=current["next"]
 
 
-    
     
     
 
