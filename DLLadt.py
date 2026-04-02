@@ -4,133 +4,138 @@
   
 """
 
-# Function to create a node:
-# Each node is a dictionary 
 def create_node(data):
     
     node={
-        "prev":None, # pointer to previous node
-        "next":None, # pointer to next node
-        "data":data  # data that is stored in the node
+        "prev":None,
+        "next":None,
+        "artist_prev":None,
+        "artist_next":None,
+        "data":data   
     }
     
-    return node # node is returned after being created
+    return node
+    
+    
     
 
-# Function to create an empty doubly linked list
 def create_list():
-    # Initialize a dictionary to represent the doubly linked list
+    
     current={
-        "head":None,      # pointer to the first node in the list
-        "tail":None,      # pointer to the last node in the list
-        "size": 0         # counter to track the number of nodes in the list
+        "head":None,
+        "tail":None,
+        "size": 0,
+        "artist_head":{},
+        "artist_tail": {}
     }
 
-    return current  # return the initialized list structure
+    return current
 
 
-# Function to insert a new node at the end of the list
+
+
 def insertEnd(lst,data):
     
     
     node=create_node(data)
      
-    if lst["head"]==None: # if there are no nodes yet, assign head and tail to this new node
+    if lst["head"]==None: #if there are no nodes yet, we will assign head and tail to be the node that's being inserted
         
         lst["head"]=node
         lst["tail"]=node
         
         
-    else: # otherwise append after current tail and update the tail pointer
+    else: #else it advances tail and inserts the node at the end.
        
         node["prev"]=lst["tail"]
         lst["tail"]["next"]=node
         lst["tail"]=node
         
-    lst["size"]+=1 # increment size after insertion
+    lst["size"]+=1
 
 
 
 
-# Function to insert a new node at the start of the list
 def insertStart(lst,data):
     
     
     node=create_node(data)
     
-    if lst["head"]==None: # if list is empty, new node becomes both head and tail
+    if lst["head"]==None: #if there are no nodes yet, we will assign head and tail to be the node that's being inserted
         
         lst["head"]=node
         lst["tail"]=node
         
         
-    else: # otherwise link new node before current head and update head pointer
+    else: #else it advances head and inserts the node at the beginning.
        
         node["next"]=lst["head"]
         lst["head"]["prev"]=node
         lst["head"]=node
         
-    lst["size"]+=1 # increment size after insertion
+    lst["size"]+=1
 
 
-# Function to insert a new node after a specified target node
+
+
 def insertMiddle(lst,data,target):
     
     
     if target==lst["tail"]:
         
-        insertEnd(lst,data) # insert at end when target is tail
+        insertEnd(lst,data)
         return
     
     else:    
         
         node=create_node(data)
         
-        node["next"]=target["next"] # connect new node to target's successor
-        node["prev"]=target # set previous pointer to target
-        target["next"]["prev"]=node # update successor to point back to new node
-        target["next"]=node # insert new node after target
+        node["next"]=target["next"]
+        node["prev"]=target
+        target["next"]["prev"]=node
+        target["next"]=node
     
     
-    lst["size"]+=1 # update size after insertion
+    lst["size"]+=1
         
     
 
 
-
-# Function to delete a node from the list
 def delete_node(lst,node):
     
         
     if node==None:
+        
         print("Nothing to delete")
         return
     
-    if lst["size"]==1: # if list has one node, clear the list
+    if lst["size"]==1:
+        
         lst["head"]=None
         lst["tail"]=None
+        lst["size"]-=1
+        return #the return is here because it crashes if the list is empty and we go on to check if node==lst["tail"] because now tail has nothing
     
-    if node==lst["tail"]: # removing the last node
+    if node==lst["tail"]:
         
         lst["tail"]=node["prev"]
         lst["tail"]["next"]=None
         
-    elif node==lst["head"]: # removing the first node
+    elif node==lst["head"]:
         
         lst["head"]=node["next"]
         lst["head"]["prev"]=None
         
-    else: # removing a node from the middle
+    else:
 
         node["prev"]["next"]=node["next"]
         node["next"]["prev"]=node["prev"]
         
-    lst["size"]-=1 # decrement size after deletion
+    lst["size"]-=1
     
 
 
 
-# Function to traverse the list from head to tail
 def traverse(lst):
     
     current=lst["head"]
@@ -140,14 +145,15 @@ def traverse(lst):
     
         while True:
             
-            print(current["data"]) # print current node data
+            print(current["data"])
             
             if current==lst["tail"]:
                 break
-            current=current["next"] # move to next node in forward direction
+            current=current["next"]
+
+
         
 
-# Function to traverse the list from tail to head
 def traverseback(lst):
     
     current=lst["tail"]
@@ -156,15 +162,15 @@ def traverseback(lst):
     
         while True:
             
-            print(current["data"]) # print current node data in reverse order
+            print(current["data"])
             
             if current==lst["head"]:
                 break
-            current=current["prev"] # move to previous node in backward direction
+            current=current["prev"]
         
 
 
-# Function to search for a node by key/value
+
 def search(lst,key,value):
     
     current=lst["head"]
@@ -174,19 +180,19 @@ def search(lst,key,value):
         while True:
             
             if current["data"][key]==value:
-                return current # return node when key/value pair matches
+                return current
         
             if current==lst["tail"]:
                 break
                 
-            current=current["next"] # move to next node to continue searching
+            current=current["next"]
             
     return None
 
 
 
 
-# # create a list and add 3 songs
+# create a list and add 3 songs
 # playlist = create_list()
 # insertEnd(playlist, {"title": "What lurks in the Forest", "artist": "Akira Yamaoka"})
 # insertEnd(playlist, {"title": "In my time of need", "artist": "Opeth"})
@@ -214,6 +220,4 @@ def search(lst,key,value):
 
 # # size should be 2
 # print(playlist["size"])
-
-
 
