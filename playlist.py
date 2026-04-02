@@ -5,7 +5,10 @@
 
 """
 from DLLadt import *
+<<<<<<< HEAD
 import random
+=======
+>>>>>>> 47e096236f81331206dde6aff2b84af2dca6eedb
 
 
 # Each song is a node in our playlist
@@ -183,6 +186,7 @@ def get_artist_songs(playlist,artist):
 
     
     
+<<<<<<< HEAD
 def shuffle(playlist):
 
     arr=[]
@@ -210,6 +214,9 @@ def shuffle(playlist):
             
 
 
+=======
+    
+>>>>>>> 47e096236f81331206dde6aff2b84af2dca6eedb
     
     
     

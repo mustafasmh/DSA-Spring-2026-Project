@@ -37,10 +37,13 @@ print("\n")
 display_playlist(playlist)
 print("\n")
 print("\n")
+<<<<<<< HEAD
 shuffle(playlist)
 display_playlist(playlist)
 print("\n")
 print("\n")
+=======
+>>>>>>> 47e096236f81331206dde6aff2b84af2dca6eedb
 # should show 3 Weeknd songs
 get_artist_songs(playlist, "The Weeknd")
 print("\n")
@@ -53,6 +56,7 @@ print("\n")
 # delete head of artist chain
 remove_song(playlist, "Blinding Lights")
 get_artist_songs(playlist, "The Weeknd")  # should show Save Your Tears
+<<<<<<< HEAD
 print("\n") 
 print("\n")
 # delete only remaining song by artist
@@ -60,3 +64,10 @@ remove_song(playlist, "Save Your Tears")
 get_artist_songs(playlist, "The Weeknd")  # should print Artist not found
 
 
+=======
+print("\n")
+print("\n")
+# delete only remaining song by artist
+remove_song(playlist, "Save Your Tears")
+get_artist_songs(playlist, "The Weeknd")  # should print Artist not found
+>>>>>>> 47e096236f81331206dde6aff2b84af2dca6eedb
