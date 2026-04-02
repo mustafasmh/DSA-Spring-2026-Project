@@ -9,11 +9,14 @@ def create_node(data):
     node={
         "prev":None,
         "next":None,
+        "artist_prev":None,
         "artist_next":None,
         "data":data   
     }
     
     return node
+    
+    
     
 
 def create_list():
@@ -22,11 +25,13 @@ def create_list():
         "head":None,
         "tail":None,
         "size": 0,
-        "artist_heads":{},
-        "artist_tails": {}
+        "artist_head":{},
+        "artist_tail": {}
     }
 
     return current
+
+
 
 
 def insertEnd(lst,data):
@@ -69,6 +74,8 @@ def insertStart(lst,data):
         lst["head"]=node
         
     lst["size"]+=1
+
+
 
 
 def insertMiddle(lst,data,target):
@@ -143,6 +150,8 @@ def traverse(lst):
             if current==lst["tail"]:
                 break
             current=current["next"]
+
+
         
 
 def traverseback(lst):
@@ -159,6 +168,7 @@ def traverseback(lst):
                 break
             current=current["prev"]
         
+
 
 
 def search(lst,key,value):
