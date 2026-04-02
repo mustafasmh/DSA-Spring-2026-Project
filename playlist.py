@@ -5,10 +5,7 @@
 
 """
 from DLLadt import *
-<<<<<<< HEAD
 import random
-=======
->>>>>>> 47e096236f81331206dde6aff2b84af2dca6eedb
 
 
 # Each song is a node in our playlist
@@ -126,7 +123,7 @@ def removefromchain(playlist,node):
     
     name=node["data"]["artist"]
     
-    if playlist["artist_head"][name]==playlist["artist_tail"][name]: #only song by this artist
+    if playlist["artist_head"][name]==playlist["artist_tail"][name]:#only song by this artist
         
         
         del playlist["artist_head"][name]
@@ -149,11 +146,14 @@ def removefromchain(playlist,node):
         
     else:
         
-        
-        node["artist_prev"]["artist_next"]=node["artist_next"]
-        node["artist_next"]["artist_prev"]=node["artist_prev"]
+        if node["artist_prev"] is not None:
+            node["artist_prev"]["artist_next"]=node["artist_next"]
+            
+        if node["artist_next"] is not None:
+            node["artist_next"]["artist_prev"]=node["artist_prev"]
 
-
+    node["artist_prev"]=None
+    node["artist_next"]=None
 
 
 
@@ -186,37 +186,8 @@ def get_artist_songs(playlist,artist):
 
     
     
-<<<<<<< HEAD
-def shuffle(playlist):
 
-    arr=[]
-
-    current=playlist["head"]
-
-    if playlist["size"]!=0:
-        
-        while True:
-            
-            arr+=[current["data"]] 
-            if current==playlist["tail"]:
-                break
-            current=current["next"]
-
-        random.shuffle(arr)
-        current=playlist["head"]
-        
-        for node in arr:
-            
-            current["data"]=node
-            if current==playlist["tail"]:
-                break
-            current=current["next"]
-            
-
-
-=======
     
->>>>>>> 47e096236f81331206dde6aff2b84af2dca6eedb
     
     
     
