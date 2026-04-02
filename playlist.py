@@ -42,7 +42,7 @@ def create_playlist():
 def add_song(playlist, title, artist, duration, genre):
     
     new_song=create_song(title, artist, duration, genre)
-    insertEnd(playlist, new_song["data"])
+    insertEnd(playlist, new_song)
     node=playlist["tail"]
     artist_chain(playlist, node)
 
@@ -130,30 +130,31 @@ def removefromchain(playlist,node):
         del playlist["artist_tail"][name]
     
     
-    elif node==playlist["artist_head"][name]:
+    elif node==playlist["artist_head"][name]: #if the song is the head
         
         
-        playlist["artist_head"][name]["artist_next"]["artist_prev"]=None
-        playlist["artist_head"][name]=playlist["artist_head"][name]["artist_next"]
+        playlist["artist_head"][name]["artist_next"]["artist_prev"]=None #the previous pointer of the song after head is set to None
+        playlist["artist_head"][name]=playlist["artist_head"][name]["artist_next"] #the song after head becomes the new head
         
         
+    elif node==playlist["artist_tail"][name]: #if the song is the tail
         
-    elif node==playlist["artist_tail"][name]:
         
-        
-        playlist["artist_tail"][name]["artist_prev"]["artist_next"]=None
-        playlist["artist_tail"][name]=playlist["artist_tail"][name]["artist_prev"]
+        playlist["artist_tail"][name]["artist_prev"]["artist_next"]=None #the next pointer of the song before tail is set to None
+        playlist["artist_tail"][name]=playlist["artist_tail"][name]["artist_prev"] #the song before tail becomes the new tail
         
     else:
         
         if node["artist_prev"] is not None:
-            node["artist_prev"]["artist_next"]=node["artist_next"]
+            node["artist_prev"]["artist_next"]=node["artist_next"] #the next pointer of the song before the song being removed is updated to be the song after
             
         if node["artist_next"] is not None:
-            node["artist_next"]["artist_prev"]=node["artist_prev"]
+            node["artist_next"]["artist_prev"]=node["artist_prev"] #the prev pointer of the song after the song being removed is updated to be the song before
 
     node["artist_prev"]=None
     node["artist_next"]=None
+
+
 
 
 
@@ -185,6 +186,8 @@ def get_artist_songs(playlist,artist):
 
 
 
+
+
 def shuffle(playlist):
 
     arr=[]
@@ -210,8 +213,8 @@ def shuffle(playlist):
                 break
             current=current["next"]
 
-        playlist["artist_head"] = {} #clearing artist chain
-        playlist["artist_tail"] = {}
+        playlist["artist_head"]={} #clearing artist chain
+        playlist["artist_tail"]={}
 
         current=playlist["head"]
         while True:
@@ -222,6 +225,10 @@ def shuffle(playlist):
                 break
             current=current["next"]
 
+    
+    
+    
+    
     
 def sortby(playlist, field):
 
@@ -248,8 +255,8 @@ def sortby(playlist, field):
             break
         current=current["next"]
 
-    playlist["artist_head"] = {} #clearing artist chain
-    playlist["artist_tail"] = {}
+    playlist["artist_head"]={} #clearing artist chain
+    playlist["artist_tail"]={}
 
     current=playlist["head"]
     while True:

@@ -7,9 +7,9 @@
 def create_node(data):
     
     node={
-        "prev":None,
+        "prev":None,#This creates pointers for the main playlist
         "next":None,
-        "artist_prev":None,
+        "artist_prev":None,#This creates pointers for artist list, basically used for making a list of all songs of an artist
         "artist_next":None,
         "data":data   
     }
@@ -19,17 +19,21 @@ def create_node(data):
     
     
 
+
+
 def create_list():
     
     current={
         "head":None,
         "tail":None,
-        "size": 0,
+        "size":0,
         "artist_head":{},
-        "artist_tail": {}
+        "artist_tail":{}
     }
 
     return current
+
+
 
 
 
@@ -56,6 +60,8 @@ def insertEnd(lst,data):
 
 
 
+
+
 def insertStart(lst,data):
     
     
@@ -64,7 +70,7 @@ def insertStart(lst,data):
     if lst["head"]==None: #if there are no nodes yet, we will assign head and tail to be the node that's being inserted
         
         lst["head"]=node
-        lst["tail"]=node
+        lst["tail"]=node 
         
         
     else: #else it advances head and inserts the node at the beginning.
@@ -74,6 +80,8 @@ def insertStart(lst,data):
         lst["head"]=node
         
     lst["size"]+=1
+
+
 
 
 
@@ -101,6 +109,8 @@ def insertMiddle(lst,data,target):
     
 
 
+
+
 def delete_node(lst,node):
     
         
@@ -116,23 +126,25 @@ def delete_node(lst,node):
         lst["size"]-=1
         return #the return is here because it crashes if the list is empty and we go on to check if node==lst["tail"] because now tail has nothing
     
-    if node==lst["tail"]:
+    if node==lst["tail"]: #if the node being removed is the tail
         
         lst["tail"]=node["prev"]
         lst["tail"]["next"]=None
         
-    elif node==lst["head"]:
+    elif node==lst["head"]: #if the node being removed is the head
         
         lst["head"]=node["next"]
         lst["head"]["prev"]=None
         
-    else:
+    else: #if the node being removed is in the middle
 
         node["prev"]["next"]=node["next"]
         node["next"]["prev"]=node["prev"]
         
     lst["size"]-=1
     
+
+
 
 
 
@@ -154,9 +166,12 @@ def traverse(lst):
 
         
 
+
+
 def traverseback(lst):
     
     current=lst["tail"]
+    
     
     if lst["size"]!=0:
     
@@ -171,9 +186,12 @@ def traverseback(lst):
 
 
 
+
+
 def search(lst,key,value):
     
     current=lst["head"]
+    
     
     if lst["size"]!=0:
     
@@ -238,7 +256,9 @@ def merge(arr,left,mid,right,field):
         arr[k]=R[j]
         j+=1
         k+=1
-    
+
+
+
 def mergeSort(arr,left,right,field):
 
     if left<right:
@@ -248,37 +268,3 @@ def mergeSort(arr,left,right,field):
         mergeSort(arr,left,mid,field)
         mergeSort(arr,mid+1,right,field)
         merge(arr,left,mid,right,field)
-
-
-
-
-
-
-# create a list and add 3 songs
-# playlist = create_list()
-# insertEnd(playlist, {"title": "What lurks in the Forest", "artist": "Akira Yamaoka"})
-# insertEnd(playlist, {"title": "In my time of need", "artist": "Opeth"})
-# insertEnd(playlist, {"title": "Opiate^2", "artist": "TOOL"})
-# insertEnd(playlist, {"title": "Hope Leaves", "artist": "Opeth"})
-
-# # should print A, B, C
-# traverse(playlist)
-
-# # should print C, B, A
-# traverseback(playlist)
-
-# # should return Song B's node
-# result=search(playlist, "artist", "TOOL")
-
-# print(result["data"])
-
-# # delete Song B then traverse, should print A, C
-# delete_node(playlist, result)
-
-# result=search(playlist, "artist", "Opeth")
-# delete_node(playlist, result)
-
-# traverse(playlist)
-
-# # size should be 2
-# print(playlist["size"])

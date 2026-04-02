@@ -13,6 +13,7 @@ SONGS GO HERE:
   
 """
 
+
 add_song(playlist, "Since I've been loving you", "Led Zeppelin", 444, "Rock")
 add_song(playlist, "No Quarter", "Tool", 673, "Metal")
 add_song(playlist, "46&2", "Tool", 364, "Metal")
@@ -46,7 +47,6 @@ FUNCTION CALLS GO HERE:
 
   
 """
-
 
 print("\n")
 print("\n")
