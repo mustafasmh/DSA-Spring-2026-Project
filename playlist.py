@@ -123,7 +123,7 @@ def removefromchain(playlist,node):
     
     name=node["data"]["artist"]
     
-    if playlist["artist_head"][name]==playlist["artist_tail"][name]: #only song by this artist
+    if playlist["artist_head"][name]==playlist["artist_tail"][name]:#only song by this artist
         
         
         del playlist["artist_head"][name]
@@ -146,11 +146,14 @@ def removefromchain(playlist,node):
         
     else:
         
-        
-        node["artist_prev"]["artist_next"]=node["artist_next"]
-        node["artist_next"]["artist_prev"]=node["artist_prev"]
+        if node["artist_prev"] is not None:
+            node["artist_prev"]["artist_next"]=node["artist_next"]
+            
+        if node["artist_next"] is not None:
+            node["artist_next"]["artist_prev"]=node["artist_prev"]
 
-
+    node["artist_prev"]=None
+    node["artist_next"]=None
 
 
 
@@ -180,9 +183,6 @@ def get_artist_songs(playlist,artist):
         current=current["artist_next"]
 
 
-
-    
-    
 def shuffle(playlist):
 
     arr=[]
@@ -225,6 +225,13 @@ def shuffle(playlist):
     
 
 
+    
+    
+    
+
+    
+    
+    
     
     
     
