@@ -181,6 +181,8 @@ def get_artist_songs(playlist,artist):
         if current==playlist["artist_tail"][artist]:
             break
         current=current["artist_next"]
+        
+
 
 
 def shuffle(playlist):
