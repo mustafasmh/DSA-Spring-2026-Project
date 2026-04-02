@@ -5,6 +5,7 @@
 
 """
 from DLLadt import *
+import random
 
 
 # Each song is a node in our playlist
@@ -182,7 +183,48 @@ def get_artist_songs(playlist,artist):
 
     
     
+def shuffle(playlist):
+
+    arr=[]
+
+    current=playlist["head"]
+
+    if playlist["size"]!=0:
+
+        while True:
+
+            arr+=[current["data"]] 
+            if current==playlist["tail"]:
+                break
+            current=current["next"]
+
+        random.shuffle(arr)
+        current=playlist["head"]
+
+        for node in arr: #replacing playlist with shuffled nodes
+
+            current["data"]=node
+            if current==playlist["tail"]:
+                break
+            current=current["next"]
+
+        playlist["artist_head"] = {} #clearing artist chain
+        playlist["artist_tail"] = {}
+
+        current=playlist["head"]
+        while True:
+            
+            artist_chain(playlist, current) #rebuilding artist chain
+            
+            if current==playlist["tail"]:
+                break
+            current=current["next"]
+
     
+
+    
+
+
     
     
     
