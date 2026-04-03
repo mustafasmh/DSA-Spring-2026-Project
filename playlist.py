@@ -42,7 +42,7 @@ def create_playlist():
 def add_song(playlist, title, artist, duration, genre):
     
     new_song=create_song(title, artist, duration, genre)
-    insertEnd(playlist, new_song)
+    insertEnd(playlist, new_song["data"])
     node=playlist["tail"]
     artist_chain(playlist, node)
 
