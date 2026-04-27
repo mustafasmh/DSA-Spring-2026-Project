@@ -231,7 +231,7 @@ def shuffle(playlist):
     
     
     
-def sortby(playlist, field):
+def sortby(playlist, field, descending):
 
     arr=[]
     current=playlist["head"]
@@ -245,7 +245,7 @@ def sortby(playlist, field):
                 break
             current=current["next"]
     
-    mergeSort(arr, 0, len(arr)-1, field)
+    mergeSort(arr, 0, len(arr)-1, field, descending)
 
     current=playlist["head"]
 
@@ -279,4 +279,28 @@ def play_song(playlist, title):
     playlist["now_playing"]=node
     print(f"Now Playing: {node['data']['title']} - {node['data']['artist']}")
     webbrowser.open(node["data"]["link"])
+
+
+def smart_shuffle(playlist):
+    sortby(playlist, 'play_count', True) #sorts by amount of plays to predict what the user might want next
+
+
+def random_skip(playlist): #skips to a random song in the playlist without changing playlist order
+    
+    n=random.randint(1, playlist['size'])
+
+    if playlist['now_playing']==None: #no song playing 
+        currentsong=playlist['head'] #then start from head
+
+    else:
+        currentsong=playlist['now_playing']
+    
+    for i in range(n):
+        if currentsong['next']==None: #loop back to start if tail found
+            currentsong=playlist['head']
+        else:
+            currentsong=currentsong['next']
+
+    title=currentsong['data']['title']
+    play_song(playlist, title) #play new song
 

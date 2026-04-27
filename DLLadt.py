@@ -220,7 +220,7 @@ Helper Functions for playlist.py
 
 
 
-def merge(arr,left,mid,right,field):
+def merge(arr,left,mid,right,field, descending):
  
     n1=mid-left+1
     n2=right-mid
@@ -238,9 +238,10 @@ def merge(arr,left,mid,right,field):
     k=left  
 
     while i<n1 and j<n2:
-        if L[i][field]<=R[j][field]:
+        if (not descending and L[i][field]<=R[j][field]) or (descending and L[i][field]>=R[j][field]):
             arr[k]=L[i]
             i+=1
+
         else:
             arr[k]=R[j]
             j+=1
@@ -258,12 +259,12 @@ def merge(arr,left,mid,right,field):
 
 
 
-def mergeSort(arr,left,right,field):
+def mergeSort(arr,left,right,field, descending):
 
     if left<right:
 
         mid=(left+right)//2
 
-        mergeSort(arr,left,mid,field)
-        mergeSort(arr,mid+1,right,field)
-        merge(arr,left,mid,right,field)
+        mergeSort(arr,left,mid,field, descending)
+        mergeSort(arr,mid+1,right,field, descending)
+        merge(arr,left,mid,right,field, descending)

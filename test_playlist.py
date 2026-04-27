@@ -25,4 +25,19 @@ add_song(playlist, "Burden", "Opeth", 461, "Metal", "https://www.youtube.com/wat
 # add_song(playlist, "White Noiz", "Akira Yamaoka", 83, "Ambient", "https://www.youtube.com/watch?v=dummy")
 # add_song(playlist, "Promise (Reprise)", "Akira Yamaoka", 104, "Ambient", "https://www.youtube.com/watch?v=dummy")
 
-menu(playlist)
+# menu(playlist)
+
+display_playlist(playlist)
+print('\n')
+
+play_song(playlist,"Near Dark")
+play_song(playlist,"Near Dark")
+play_song(playlist,"H.")
+play_song(playlist,"Near Dark")
+play_song(playlist,"H.")
+play_song(playlist,"No Quarter")
+
+print('\n')
+smart_shuffle(playlist)
+print('\n')
+display_playlist(playlist)
