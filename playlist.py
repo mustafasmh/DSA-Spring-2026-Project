@@ -301,6 +301,5 @@ def random_skip(playlist): #skips to a random song in the playlist without chang
         else:
             currentsong=currentsong['next']
 
-    title=currentsong['data']['title']
-    play_song(playlist, title) #play new song
+    return currentsong #play new song
 

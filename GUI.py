@@ -46,16 +46,12 @@ tk.Label(header, text="◈ POINTLIST", bg=BG, fg=ACCENT,
          font=("Courier New", 20, "bold")).pack(side="left")
 
 # ── dropdown menu bar ─────────────────────────────────────────────────────────
-menubar = tk.Menu(window, bg=SIDEBAR, fg=TEXT, activebackground=ACCENT,
-                  activeforeground=BG, font=FONT_MAIN, bd=0, tearoff=0)
+menubar = tk.Menu(window, bg=SIDEBAR, fg=TEXT, activebackground=ACCENT, activeforeground=BG, font=FONT_MAIN, bd=0, tearoff=0)
 window.config(menu=menubar)
 
-playlist_menu = tk.Menu(menubar, bg=SIDEBAR, fg=TEXT, activebackground=ACCENT,
-                        activeforeground=BG, font=FONT_MAIN, tearoff=0)
-songs_menu    = tk.Menu(menubar, bg=SIDEBAR, fg=TEXT, activebackground=ACCENT,
-                        activeforeground=BG, font=FONT_MAIN, tearoff=0)
-artist_menu   = tk.Menu(menubar, bg=SIDEBAR, fg=TEXT, activebackground=ACCENT,
-                        activeforeground=BG, font=FONT_MAIN, tearoff=0)
+playlist_menu = tk.Menu(menubar, bg=SIDEBAR, fg=TEXT, activebackground=ACCENT, activeforeground=BG, font=FONT_MAIN, tearoff=0)
+songs_menu    = tk.Menu(menubar, bg=SIDEBAR, fg=TEXT, activebackground=ACCENT, activeforeground=BG, font=FONT_MAIN, tearoff=0)
+artist_menu   = tk.Menu(menubar, bg=SIDEBAR, fg=TEXT, activebackground=ACCENT, activeforeground=BG, font=FONT_MAIN, tearoff=0)
 
 menubar.add_cascade(label="Playlist", menu=playlist_menu)
 menubar.add_cascade(label="Songs",    menu=songs_menu)
@@ -95,10 +91,7 @@ ctrl_frame = tk.Frame(now_bar, bg=NOW_BG)
 ctrl_frame.pack()
 
 def make_btn(parent, text, cmd):
-    return tk.Button(parent, text=text, command=cmd,
-                     bg=SIDEBAR, fg=TEXT, activebackground=ACCENT,
-                     activeforeground=BG, font=FONT_MAIN,
-                     relief="flat", padx=14, pady=4, cursor="hand2")
+    return tk.Button(parent, text=text, command=cmd, bg=SIDEBAR, fg=TEXT, activebackground=ACCENT, activeforeground=BG, font=FONT_MAIN, relief="flat", padx=14, pady=4, cursor="hand2")
 
 # ── helpers ───────────────────────────────────────────────────────────────────
 def refresh():
@@ -157,9 +150,26 @@ def pick_song_number(title="Pick a song"):
 
 # ── playlist menu actions ─────────────────────────────────────────────────────
 def do_shuffle():
+    if playlist["now_playing"]:
+        current_title = playlist["now_playing"]["data"]["title"]
+    else:
+        current_title = None
     shuffle(playlist)
+    if current_title:
+        playlist["now_playing"] = search(playlist, "title", current_title)
     refresh()
     messagebox.showinfo("Pointlist", "Playlist shuffled.")
+
+def do_smart_shuffle():
+    if playlist["now_playing"]:
+        current_title = playlist["now_playing"]["data"]["title"]
+    else:
+        current_title = None
+    smart_shuffle(playlist)
+    if current_title:
+        playlist["now_playing"] = search(playlist, "title", current_title)
+    refresh()
+    messagebox.showinfo("Pointlist", "Playlist smart shuffled.")
 
 def do_sortby():
     choice = simpledialog.askstring(
@@ -167,12 +177,26 @@ def do_sortby():
         parent=window)
     fields = {"1": "title", "2": "artist", "3": "duration", "4": "genre"}
     if choice in fields:
-        sortby(playlist, fields[choice])
+        order = simpledialog.askstring(
+            "Order", "Order:\n1. Ascending\n2. Descending",
+            parent=window)
+        if order not in ("1", "2"):
+            return
+        descending = order == "2"
+        if playlist["now_playing"]:
+            current_title = playlist["now_playing"]["data"]["title"]
+        else:
+            current_title = None
+        sortby(playlist, fields[choice], descending)
+        if current_title:
+            playlist["now_playing"] = search(playlist, "title", current_title)
         refresh()
-        messagebox.showinfo("Pointlist", f"Sorted by {fields[choice]}.")
+        messagebox.showinfo("Pointlist", f"Sorted by {fields[choice]} ({'descending' if descending else 'ascending'}).")
 
-playlist_menu.add_command(label="Shuffle",  command=do_shuffle)
-playlist_menu.add_command(label="Sort By",  command=do_sortby)
+playlist_menu.add_command(label="Shuffle", command=do_shuffle)
+playlist_menu.add_command(label="Smart Shuffle", command=do_smart_shuffle)
+playlist_menu.add_command(label="Sort By", command=do_sortby)
+
 
 # ── songs menu actions ────────────────────────────────────────────────────────
 def do_add():
@@ -270,6 +294,11 @@ def do_play():
         current = current["next"]
     _play_node(current)
 
+def do_random_skip():
+    song=random_skip(playlist)
+    _play_node(song)
+
+
 def do_next():
     np = playlist["now_playing"]
     if np is None:
@@ -303,6 +332,7 @@ make_btn(ctrl_frame, "⏮  Prev", do_prev).pack(side="left", padx=8)
 make_btn(ctrl_frame, "▶  Play ", do_play_current).pack(side="left", padx=8)
 make_btn(ctrl_frame, "⏭  Next", do_next).pack(side="left", padx=8)
 make_btn(ctrl_frame, "▶  Play Song", do_play).pack(side="left", padx=8)
+make_btn(ctrl_frame,"▶  Random Skip", do_random_skip).pack(side="left", padx=8)
 
 # ── init ──────────────────────────────────────────────────────────────────────
 refresh()
