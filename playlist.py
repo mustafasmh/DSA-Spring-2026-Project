@@ -6,20 +6,21 @@
 """
 from DLLadt import *
 import random
+import webbrowser
 
 
 # Each song is a node in our playlist
 
 
-def create_song(title,artist,duration,genre):
-    
+def create_song(title, artist, duration, genre, link=""):
     data = {
-        "title":title,
-        "artist":artist,
-        "duration":duration,
-        "genre":genre
-        }
-    
+        "title": title,
+        "artist": artist,
+        "duration": duration,
+        "genre": genre,
+        "play_count": 0,
+        "link": link
+    }
     song = create_node(data)
     return song
 
@@ -39,12 +40,12 @@ def create_playlist():
 
 
 # A playlist manager needs to have the ability to add a song:
-def add_song(playlist, title, artist, duration, genre):
-    
-    new_song=create_song(title, artist, duration, genre)
+def add_song(playlist, title, artist, duration, genre, link=""):
+    new_song = create_song(title, artist, duration, genre, link)
     insertEnd(playlist, new_song["data"])
-    node=playlist["tail"]
+    node = playlist["tail"]
     artist_chain(playlist, node)
+
 
 
 
@@ -268,12 +269,14 @@ def sortby(playlist, field):
         current=current["next"]
 
 
-    
-    
 
-    
-    
-    
-    
-    
-    
+def play_song(playlist, title):
+    node=search(playlist, "title", title)
+    if node is None:
+        print("Song not found")
+        return
+    node["data"]["play_count"]+=1
+    playlist["now_playing"]=node
+    print(f"Now Playing: {node['data']['title']} - {node['data']['artist']}")
+    webbrowser.open(node["data"]["link"])
+

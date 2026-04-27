@@ -22,15 +22,14 @@ def create_node(data):
 
 
 def create_list():
-    
-    current={
-        "head":None,
-        "tail":None,
-        "size":0,
-        "artist_head":{},
-        "artist_tail":{}
+    current = {
+        "head": None,
+        "tail": None,
+        "size": 0,
+        "artist_head": {},
+        "artist_tail": {},
+        "now_playing": None
     }
-
     return current
 
 
