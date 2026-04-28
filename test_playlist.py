@@ -30,14 +30,28 @@ add_song(playlist, "Burden", "Opeth", 461, "Metal", "https://www.youtube.com/wat
 display_playlist(playlist)
 print('\n')
 
-play_song(playlist,"Near Dark")
-play_song(playlist,"Near Dark")
-play_song(playlist,"H.")
-play_song(playlist,"Near Dark")
-play_song(playlist,"H.")
-play_song(playlist,"No Quarter")
+# play_song(playlist,"Near Dark")
+# play_song(playlist,"Near Dark")
+# play_song(playlist,"H.")
+# play_song(playlist,"Near Dark")
+# play_song(playlist,"H.")
+# play_song(playlist,"No Quarter")
+
+play_song(playlist, "Crystal Clear")
+play_song(playlist, "Crystal Clear")
+play_song(playlist, "Radio Static")
+play_song(playlist, "Burden")
+play_song(playlist, "Burden")
+play_song(playlist, "So Real")
+
+
 
 print('\n')
-smart_shuffle(playlist)
+print(top_three_artists(playlist))
+print('\n')
+print(top_three_songs(playlist))
+print('\n')
+print(top_three_genres(playlist))
 print('\n')
 display_playlist(playlist)
+

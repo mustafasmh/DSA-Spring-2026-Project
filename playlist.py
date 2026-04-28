@@ -269,7 +269,6 @@ def sortby(playlist, field, descending):
         current=current["next"]
 
 
-
 def play_song(playlist, title):
     node=search(playlist, "title", title)
     if node is None:
@@ -302,4 +301,231 @@ def random_skip(playlist): #skips to a random song in the playlist without chang
             currentsong=currentsong['next']
 
     return currentsong #play new song
+
+def top_three_artists(playlist):
+
+    frequency={} #track how frequently each artist played
+
+    current=playlist['head']
+    while True:
+
+        artist=current['data']['artist']
+
+        if current['data']['play_count']!=0 and artist not in frequency:
+            frequency[artist]=current['data']['play_count'] 
+
+        elif current['data']['play_count']!=0 and artist in frequency:
+            frequency[artist]+=current['data']['play_count'] #track the play count of each artist 
+
+        if current==playlist['tail']:
+            break
+        else:
+            current=current['next']
+    
+    first=-1000
+    second=-1000
+    third=-1000
+
+    for k,v in frequency.items(): #find artist with max play count
+        if v>first:
+            firstartist=k
+            first=v
+
+    del frequency[firstartist] #remove from dict to search for second highest
+
+    for k,v in frequency.items(): #find artist with second max play count
+        if v>second:
+            secondartist=k
+            second=v
+
+    del frequency[secondartist] #remove from dict to search for third highest
+
+    for k,v in frequency.items(): #find artist with third max play count
+        if v>third:
+            thirdartist=k
+            third=v
+
+    return firstartist, secondartist, thirdartist
+    
+def top_three_artists(playlist):
+
+    frequency={} #track how frequently each artist played
+
+    current=playlist['head']
+    while True:
+
+        artist=current['data']['artist']
+
+        if current['data']['play_count']!=0 and artist not in frequency:
+            frequency[artist]=current['data']['play_count'] 
+
+        elif current['data']['play_count']!=0 and artist in frequency:
+            frequency[artist]+=current['data']['play_count'] #track the play count of each artist 
+
+        if current==playlist['tail']:
+            break
+        else:
+            current=current['next']
+    
+    first=-1000
+    second=-1000
+    third=-1000
+
+    for k,v in frequency.items(): #find artist with max play count
+        if v>first:
+            firstartist=k
+            first=v
+
+    del frequency[firstartist] #remove from dict to search for second highest
+
+    for k,v in frequency.items(): #find artist with second max play count
+        if v>second:
+            secondartist=k
+            second=v
+
+    del frequency[secondartist] #remove from dict to search for third highest
+
+    for k,v in frequency.items(): #find artist with third max play count
+        if v>third:
+            thirdartist=k
+            third=v
+
+    return firstartist, secondartist, thirdartist
+    
+def top_three_artists(playlist):
+
+    frequency={} #track how frequently each artist played
+
+    current=playlist['head']
+    while True:
+
+        artist=current['data']['artist']
+
+        if current['data']['play_count']!=0 and artist not in frequency:
+            frequency[artist]=current['data']['play_count'] 
+
+        elif current['data']['play_count']!=0 and artist in frequency:
+            frequency[artist]+=current['data']['play_count'] #track the play count of each artist 
+
+        if current==playlist['tail']:
+            break
+        else:
+            current=current['next']
+    
+    first=-1000
+    second=-1000
+    third=-1000
+
+    for k,v in frequency.items(): #find artist with max play count
+        if v>first:
+            firstartist=k
+            first=v
+
+    del frequency[firstartist] #remove from dict to search for second highest
+
+    for k,v in frequency.items(): #find artist with second max play count
+        if v>second:
+            secondartist=k
+            second=v
+
+    del frequency[secondartist] #remove from dict to search for third highest
+
+    for k,v in frequency.items(): #find artist with third max play count
+        if v>third:
+            thirdartist=k
+            third=v
+
+    return firstartist, secondartist, thirdartist
+    
+def top_three_songs(playlist):
+
+    frequency={} #track how frequently each song played
+
+    current=playlist['head']
+    while True:
+
+        song=current['data']['title']
+
+        if current['data']['play_count']!=0 and song not in frequency:
+            frequency[song]=current['data']['play_count'] 
+
+        elif current['data']['play_count']!=0 and song in frequency:
+            frequency[song]+=current['data']['play_count'] #track the play count of each song 
+
+        if current==playlist['tail']:
+            break
+        else:
+            current=current['next']
+    
+    first=-1000
+    second=-1000
+    third=-1000
+
+    for k,v in frequency.items(): #find song with max play count
+        if v>first:
+            firstsong=k
+            first=v
+
+    del frequency[firstsong] #remove from dict to search for second highest
+
+    for k,v in frequency.items(): #find song with second max play count
+        if v>second:
+            secondsong=k
+            second=v
+
+    del frequency[secondsong] #remove from dict to search for third highest
+
+    for k,v in frequency.items(): #find song with third max play count
+        if v>third:
+            thirdsong=k
+            third=v
+
+    return firstsong, secondsong, thirdsong
+    
+def top_three_genres(playlist):
+
+    frequency={} #track how frequently each genre played
+
+    current=playlist['head']
+    while True:
+
+        genre=current['data']['genre']
+
+        if current['data']['play_count']!=0 and genre not in frequency:
+            frequency[genre]=current['data']['play_count'] 
+
+        elif current['data']['play_count']!=0 and genre in frequency:
+            frequency[genre]+=current['data']['play_count'] #track the play count of each genre 
+
+        if current==playlist['tail']:
+            break
+        else:
+            current=current['next']
+    
+    first=-1000
+    second=-1000
+    third=-1000
+
+    for k,v in frequency.items(): #find genre with max play count
+        if v>first:
+            firstgenre=k
+            first=v
+
+    del frequency[firstgenre] #remove from dict to search for second highest
+
+    for k,v in frequency.items(): #find genre with second max play count
+        if v>second:
+            secondgenre=k
+            second=v
+
+    del frequency[secondgenre] #remove from dict to search for third highest
+
+    for k,v in frequency.items(): #find genre with third max play count
+        if v>third:
+            thirdgenre=k
+            third=v
+
+    return firstgenre, secondgenre, thirdgenre
+
+
 
