@@ -2,24 +2,25 @@ import tkinter as tk
 from tkinter import simpledialog, messagebox
 from playlist import *
 import random
+from DLLadt import to_seconds
 
 # playlist
 
 playlist=create_playlist()
 
-add_song(playlist, "Since I've been loving you", "Led Zeppelin", 444, "Rock", "https://youtu.be/vcIem-L398w?si=KHNQdcdZoVc0v_Dp")
-add_song(playlist, "No Quarter", "Tool", 673, "Metal", "https://www.youtube.com/watch?v=_ZKIfCJZvZo")
+add_song(playlist, "Since I've been loving you", "Led Zeppelin", 445, "Rock", "https://youtu.be/vcIem-L398w?si=KHNQdcdZoVc0v_Dp")
+add_song(playlist, "No Quarter", "Tool", 688, "Metal", "https://www.youtube.com/watch?v=_ZKIfCJZvZo")
 add_song(playlist, "46&2", "Tool", 364, "Metal", "https://www.youtube.com/watch?v=GIuZUCpm9hc")
-add_song(playlist, "H.", "Tool", 713, "Metal", "https://www.youtube.com/watch?v=bg8vTSyHFkQ")
+add_song(playlist, "H.", "Tool", 366, "Metal", "https://www.youtube.com/watch?v=bg8vTSyHFkQ")
 add_song(playlist, "Crystal Clear", "Ayaan Niazi", 210, "Jazz", "")
-add_song(playlist, "Radio Static", "Ayaan Niazi", 95, "Dread", "")
-add_song(playlist, "Blue in Green", "Miles Davis", 337, "Jazz", "https://www.youtube.com/watch?v=TLDflhhdPCg")
+add_song(playlist, "Radio Static", "Ayaan Niazi", 95, "Ambient", "")
+add_song(playlist, "Blue in Green", "Miles Davis", 339, "Jazz", "https://www.youtube.com/watch?v=TLDflhhdPCg")
 add_song(playlist, "Archangel", "Burial", 240, "Ambient", "https://www.youtube.com/watch?v=E2qLD9c3Gq4")
 add_song(playlist, "Near Dark", "Burial", 236, "Ambient", "https://www.youtube.com/watch?v=TK7aQmdqCj8")
-add_song(playlist, "Lover you should've come over", "Jeff Buckley", 310, "Alt", "https://www.youtube.com/watch?v=HxfE6PJmGS8")
-add_song(playlist, "So Real", "Jeff Buckley", 283, "Alt", "https://www.youtube.com/watch?v=EcaxrqhUJ4c")
-add_song(playlist, "In my time of need", "Opeth", 356, "Metal", "https://youtu.be/razzBeBLDG4?si=54rW6vsxNwWMn79T")
-add_song(playlist, "Burden", "Opeth", 461, "Metal", "https://www.youtube.com/watch?v=orwgEEaJln0")
+add_song(playlist, "Lover you should've come over", "Jeff Buckley", 405, "Alt", "https://www.youtube.com/watch?v=HxfE6PJmGS8")
+add_song(playlist, "So Real", "Jeff Buckley", 279, "Alt", "https://www.youtube.com/watch?v=EcaxrqhUJ4c")
+add_song(playlist, "In my time of need", "Opeth", 349, "Metal", "https://youtu.be/razzBeBLDG4?si=54rW6vsxNwWMn79T")
+add_song(playlist, "Burden", "Opeth", 462, "Metal", "https://www.youtube.com/watch?v=orwgEEaJln0")
 
 # colors 
 
@@ -74,7 +75,7 @@ top_song_phrases=[
     "Your #1 track. You hit the replay button until it gave up.",
     "The soundtrack to your year. You never seemed to get tired of it.",
     "If your 2026 has a theme song, this is definitely it.",
-*    "You and this track were inseparable. The data doesn't lie."
+    "You and this track were inseparable. The data doesn't lie."
 ]
 
 second_song_phrases=[
@@ -381,6 +382,10 @@ def refresh():
     current=playlist["head"]
     number=1
     
+    header_text=(f"   #   {'Title':<38}" f"{'Artist':<28}" f"{'Genre':<12}" f"{'Time':<7}" f"{'Plays'}")
+
+    tk.Label(list_frame, text=header_text, bg=ROW_A, fg=ACCENT, font=FONT_NOW, anchor="w", padx=6, pady=6).pack(fill="x")
+    
     while True:
         song=current["data"]
         mins=song["duration"]//60
@@ -441,20 +446,31 @@ def pick_song_number(title="Pick a song"):
     return ask(f"{title}\nEnter song number:", int)
 
 
+def ask_duration():
+    mins=ask("Minutes:", int)
+    if mins is None:
+        return None
+    secs=ask("Seconds:", int)
+    if secs is None:
+        return None
+    return to_seconds(mins, secs)
+
+
 # playlist menu actions
 
 def do_shuffle():
     
     if playlist["now_playing"]:
         current_title=playlist["now_playing"]["data"]["title"]
+        current_artist=playlist["now_playing"]["data"]["artist"]
         
     else:
         current_title=None
-        
+        current_artist=None
     shuffle(playlist)
     
     if current_title:
-        playlist["now_playing"]=search(playlist, "title", current_title)
+        playlist["now_playing"]=search_title_artist(playlist, "title", current_title,current_artist)
         
     refresh()
     messagebox.showinfo("Pointlist", "Playlist shuffled.")
@@ -463,14 +479,16 @@ def do_smart_shuffle():
     
     if playlist["now_playing"]:
         current_title=playlist["now_playing"]["data"]["title"]
+        current_artist=playlist["now_playing"]["data"]["artist"]
         
     else:
         current_title=None
+        current_artist=None
         
     smart_shuffle(playlist)
     
     if current_title:
-        playlist["now_playing"]=search(playlist, "title", current_title)
+        playlist["now_playing"]=search_title_artist(playlist, "title", current_title,current_artist)
         
     refresh()
     messagebox.showinfo("Pointlist", "Playlist smart shuffled.")
@@ -535,7 +553,13 @@ def do_add():
     if artist is None:
         return
     
-    duration=ask("Duration (seconds):", int)
+    node=search(playlist, "title", title)
+    
+    if node is not None and node["data"]["artist"]==artist:
+        messagebox.showerror("Pointlist", f"'{title}' by {artist} already exists.")
+        return
+    
+    duration=ask_duration()
     
     if duration is None:
         return
@@ -564,7 +588,13 @@ def do_update():
     if title is None:
         return
     
-    node=search(playlist, "title", title)
+    artist=ask("Artist:")
+    
+    if artist is None:
+        return
+    
+    node=search_title_artist(playlist, title, artist)
+    
     
     if node is None:
         messagebox.showerror("Pointlist", "Song not found.")
@@ -578,15 +608,33 @@ def do_update():
         return
     
     if fields[field]=="duration":
-        new_value=ask("New value:", int)
+        new_value=ask_duration()
         
-    else:
+    else:     
         new_value=ask("New value:")
         
     if new_value is None:
         return
+
+    if fields[field]=="title":
+        
+        existing=search_title_artist(playlist, new_value, node["data"]["artist"])
+        
+        if existing is not None:
+            messagebox.showerror("Pointlist", f"'{new_value}' by {node['data']['artist']} already exists.")
+            return
+        
+    if fields[field]=="artist":
+        
+        existing=search_title_artist(playlist, node["data"]["title"], new_value)
+        
+        if existing is not None:
+            messagebox.showerror("Pointlist", f"'{node['data']['title']}' by {new_value} already exists.")
+            return
     
-    update_song(playlist, title, fields[field], new_value)
+    
+    
+    update_song(playlist, node, fields[field], new_value)
     refresh()
     
     messagebox.showinfo("Pointlist", "Song updated.")
@@ -600,7 +648,13 @@ def do_remove():
     if title is None:
         return
     
-    node=search(playlist, "title", title)
+    artist=ask("Artist:")
+    
+    if artist is None:
+        return
+    
+    node=search_title_artist(playlist, title, artist)
+    
     
     if node is None:
         messagebox.showerror("Pointlist", "Song not found.")
@@ -724,7 +778,7 @@ def do_genre():
         _play_node(nodes[num-1])
         
 
-    make_btn(win, "▶ Play a Song", play_from_genre).pack(pady=10)
+    
     
     
     while True:
@@ -750,7 +804,7 @@ def do_genre():
         current=current["genre_next"]
 
 
-
+    make_btn(win, "▶ Play a Song", play_from_genre).pack(pady=10)
 
 artist_menu.add_command(label="Get Artist Songs", command=do_artist)
 artist_menu.add_command(label="Get Genre Songs", command=do_genre)

@@ -270,3 +270,7 @@ def mergeSort(arr,left,right,field, descending):
         mergeSort(arr,left,mid,field, descending)
         mergeSort(arr,mid+1,right,field, descending)
         merge(arr,left,mid,right,field, descending)
+
+
+def to_seconds(mins, secs=0):
+    return mins*60+secs

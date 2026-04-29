@@ -53,43 +53,44 @@ def add_song(playlist, title, artist, duration, genre, link=""):
 
 
 
-def remove_song(playlist, title):
+def remove_song(playlist, title, artist):
     
     
-    node = search(playlist, "title", title)
-
-    if node is None:
-        
-        print("Song not found")
-        return
-
-    removefromchain(playlist,node)
-    removefromgenrechain(playlist,node)
-    delete_node(playlist, node)
-    print("Song removed successfully")
-
-
-
-
-
-
-def update_song(playlist, title, field, new_value):
+    node=search_title_artist(playlist, title, artist)
     
+    if node in search(playlist,"artist",artist):
     
-    node=search(playlist, "title", title)
+        if node is None:
+            
+            print("Song not found")
+            return
+
+        removefromchain(playlist,node)
+        removefromgenrechain(playlist,node)
+        delete_node(playlist, node)
+        print("Song removed successfully")
+
+
+
+
+
+
+def update_song(playlist, node, field, new_value):
     
-    if node is None:
-        
-        print("Song not found")
-        return False
     
     if field=="artist":
-        
-        removefromchain(playlist, node) #remove from old artist chain
+        removefromchain(playlist, node)
         node["data"][field]=new_value
-        artist_chain(playlist, node) #add to new artist chain
+        artist_chain(playlist, node)
+        
+    elif field=="genre":
+        removefromgenrechain(playlist, node)
+        node["data"][field]=new_value
+        genre_chain(playlist, node)
+        
     else:
         node["data"][field]=new_value
+        
     return True
 
 
@@ -596,3 +597,24 @@ def listening_minutes(playlist):
     minutes=time//60
 
     return minutes
+
+
+
+
+def search_title_artist(lst, title, artist):
+    
+    current=lst["head"]
+    
+    if lst["size"]!=0:
+        
+        while True:
+            
+            if current["data"]["title"]==title and current["data"]["artist"]==artist:
+                return current
+            
+            if current==lst["tail"]:
+                break
+            
+            current=current["next"]
+    return None
+
