@@ -475,23 +475,7 @@ def do_shuffle():
     refresh()
     messagebox.showinfo("Pointlist", "Playlist shuffled.")
 
-def do_smart_shuffle():
-    
-    if playlist["now_playing"]:
-        current_title=playlist["now_playing"]["data"]["title"]
-        current_artist=playlist["now_playing"]["data"]["artist"]
-        
-    else:
-        current_title=None
-        current_artist=None
-        
-    smart_shuffle(playlist)
-    
-    if current_title:
-        playlist["now_playing"]=search_title_artist(playlist,current_title,current_artist)
-        
-    refresh()
-    messagebox.showinfo("Pointlist", "Playlist smart shuffled.")
+
 
 def do_sortby():
     
@@ -846,7 +830,7 @@ def do_recommended():
             
         else:
             tk.Label(frame, text=text, bg=ROW_B, fg=TEXT, font=FONT_NOW, anchor="w", padx=6, pady=5).pack(fill="x")
-                
+
         nodes.append(current)
         number+=1
 
