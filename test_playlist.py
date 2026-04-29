@@ -53,5 +53,6 @@ print(top_three_songs(playlist))
 print('\n')
 print(top_three_genres(playlist))
 print('\n')
-display_playlist(playlist)
+# display_playlist(playlist)
+print(top_stats(playlist))
 

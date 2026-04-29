@@ -440,3 +440,14 @@ def top_three_genres(playlist):
 
 
 
+def top_stats(playlist):
+
+    stats=[]
+    stats.append(top_three_artists(playlist))
+    stats.append(top_three_genres(playlist))
+    stats.append(top_three_songs(playlist))
+
+    
+    
+
+    return stats
