@@ -44,7 +44,8 @@ def add_song(playlist, title, artist, duration, genre, link=""):
     new_song = create_song(title, artist, duration, genre, link)
     insertEnd(playlist, new_song["data"])
     node = playlist["tail"]
-    artist_chain(playlist, node)
+    artist_chain(playlist,node)
+    genre_chain(playlist,node)
 
 
 
@@ -63,6 +64,7 @@ def remove_song(playlist, title):
         return
 
     removefromchain(playlist,node)
+    removefromgenrechain(playlist,node)
     delete_node(playlist, node)
     print("Song removed successfully")
 
@@ -130,7 +132,6 @@ def artist_chain(playlist,node):
     
     if name in playlist["artist_head"]:
         
-        node["artist_prev"]=playlist["artist_tail"][name]
         playlist["artist_tail"][name]["artist_next"]=node
         playlist["artist_tail"][name]=node 
         
@@ -138,7 +139,25 @@ def artist_chain(playlist,node):
         
         playlist["artist_head"][name]=node
         playlist["artist_tail"][name]=node
- 
+
+
+
+
+
+        
+def genre_chain(playlist,node):
+    
+    name=node["data"]["genre"]
+    
+    if name in playlist["genre_head"]:
+        
+        playlist["genre_tail"][name]["genre_next"]=node
+        playlist["genre_tail"][name]=node 
+        
+    else:
+        
+        playlist["genre_head"][name]=node
+        playlist["genre_tail"][name]=node
  
  
  
@@ -157,27 +176,70 @@ def removefromchain(playlist,node):
     
     elif node==playlist["artist_head"][name]: #if the song is the head
         
-        
-        playlist["artist_head"][name]["artist_next"]["artist_prev"]=None #the previous pointer of the song after head is set to None
         playlist["artist_head"][name]=playlist["artist_head"][name]["artist_next"] #the song after head becomes the new head
         
         
-    elif node==playlist["artist_tail"][name]: #if the song is the tail
-        
-        
-        playlist["artist_tail"][name]["artist_prev"]["artist_next"]=None #the next pointer of the song before tail is set to None
-        playlist["artist_tail"][name]=playlist["artist_tail"][name]["artist_prev"] #the song before tail becomes the new tail
-        
     else:
+        #traverse to find the node before the one being deleted
         
-        if node["artist_prev"] is not None:
-            node["artist_prev"]["artist_next"]=node["artist_next"] #the next pointer of the song before the song being removed is updated to be the song after
+        current=playlist["artist_head"][name]
+        
+        while current["artist_next"]!=node:
             
-        if node["artist_next"] is not None:
-            node["artist_next"]["artist_prev"]=node["artist_prev"] #the prev pointer of the song after the song being removed is updated to be the song before
+            current=current["artist_next"]
 
-    node["artist_prev"]=None
+
+        if node==playlist["artist_tail"][name]: #if the song is the tail
+            playlist["artist_tail"][name]=current #node before becomes new tail
+            
+            current["artist_next"]=None
+            
+            
+        else: #middle
+            current["artist_next"]=node["artist_next"] #skip over the deleted node
+
     node["artist_next"]=None
+
+
+
+
+
+def removefromgenrechain(playlist, node):
+    
+    name=node["data"]["genre"]
+
+    if playlist["genre_head"][name]==playlist["genre_tail"][name]: #only song in this genre
+        
+        
+        del playlist["genre_head"][name]
+        del playlist["genre_tail"][name]
+
+
+    elif node==playlist["genre_head"][name]: #if the song is the head
+        
+        playlist["genre_head"][name]=playlist["genre_head"][name]["genre_next"]
+
+
+    else:
+        #traverse to find node before the one being deleted
+        
+        current=playlist["genre_head"][name]
+        
+        while current["genre_next"]!=node:
+            
+            current=current["genre_next"]
+
+
+        if node==playlist["genre_tail"][name]: #if the song is the tail
+            playlist["genre_tail"][name]=current
+            
+            current["genre_next"]=None
+            
+            
+        else: #middle
+            current["genre_next"]=node["genre_next"]
+
+    node["genre_next"]=None
 
 
 
@@ -207,6 +269,35 @@ def get_artist_songs(playlist,artist):
         if current==playlist["artist_tail"][artist]:
             break
         current=current["artist_next"]
+
+
+
+
+
+
+def get_genre_songs(playlist,genre):
+    
+    if genre not in playlist["genre_head"]:
+        
+        print("Genre not found")
+        return
+    
+    current=playlist["genre_head"][genre]
+    
+    number=1
+
+    while True:
+        
+        song=current["data"]
+        mins=song["duration"]//60
+        secs=song["duration"]%60
+        
+        print(f"{number}. {song["title"]} - {song["artist"]} | {song["genre"]} | {mins}:{secs:02d}") 
+
+        number+=1
+        if current==playlist["genre_tail"][genre]:
+            break
+        current=current["genre_next"]
         
 
 
@@ -240,17 +331,20 @@ def shuffle(playlist):
 
         playlist["artist_head"]={} #clearing artist chain
         playlist["artist_tail"]={}
+        playlist["genre_head"]={} #clearing genre chain
+        playlist["genre_tail"]={}
 
         current=playlist["head"]
         while True:
             
             artist_chain(playlist, current) #rebuilding artist chain
+            genre_chain(playlist, current) #rebuilding genre chain
             
             if current==playlist["tail"]:
                 break
             current=current["next"]
 
-    
+
     
     
     
@@ -280,13 +374,17 @@ def sortby(playlist, field, descending):
             break
         current=current["next"]
 
+
     playlist["artist_head"]={} #clearing artist chain
     playlist["artist_tail"]={}
+    playlist["genre_head"]={} #clearing genre chain
+    playlist["genre_tail"]={}
 
     current=playlist["head"]
     while True:
         
         artist_chain(playlist, current) #rebuilding artist chain
+        genre_chain(playlist, current) #rebuilding genre chain
         
         if current==playlist["tail"]:
             break

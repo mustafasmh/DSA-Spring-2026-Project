@@ -607,6 +607,7 @@ def do_remove():
         return
     
     removefromchain(playlist, node)
+    removefromgenrechain(playlist, node)
     delete_node(playlist, node)
     refresh()
     
@@ -675,19 +676,84 @@ def do_artist():
 
     def play_from_artist():
         
-        num=ask("Enter song number to play:", int)
+        num=simpledialog.askinteger("Pointlist", "Enter song number to play:", parent=win)
         
         if num is None or num<1 or num>len(nodes):
             return
         
-        _play_node(nodes[num-1])
         win.destroy()
+        _play_node(nodes[num-1])
+        
 
     make_btn(win, "▶ Play a Song", play_from_artist).pack(pady=10)
 
 
 
+def do_genre():
+    genre=ask("Genre name:")
+    
+    if genre is None:
+        return
+    
+    if genre not in playlist["genre_head"]:
+        messagebox.showerror("Pointlist", "Genre not found.")
+        return
+
+    win=tk.Toplevel(window)
+    win.title(genre)
+    win.geometry("700x400")
+    win.configure(bg=BG)
+
+    tk.Label(win, text=genre, bg=BG, fg=ACCENT, font=FONT_HEAD).pack(pady=10)
+
+    frame=tk.Frame(win, bg=BG)
+    frame.pack(fill="both", expand=True, padx=15)
+
+    current=playlist["genre_head"][genre]
+    nodes=[]
+    number=1
+    
+    def play_from_genre():
+        
+        num=simpledialog.askinteger("Pointlist", "Enter song number to play:", parent=win)
+        
+        if num is None or num<1 or num>len(nodes):
+            return
+        
+        win.destroy()
+        _play_node(nodes[num-1])
+        
+
+    make_btn(win, "▶ Play a Song", play_from_genre).pack(pady=10)
+    
+    
+    while True:
+        
+        song=current["data"]
+        mins=song["duration"]//60
+        secs=song["duration"]%60
+        duration=f"{mins}:{secs:02d}"
+        
+        
+        text=(f"  {number}.  {song['title']:<38}{song['genre']:<12}{duration:<7}▶ {song['play_count']}")
+        if number%2==0:
+            tk.Label(frame, text=text, bg=ROW_A, fg=TEXT, font=FONT_NOW, anchor="w", padx=6, pady=5).pack(fill="x")
+            
+        else:
+            tk.Label(frame, text=text, bg=ROW_B, fg=TEXT, font=FONT_NOW, anchor="w", padx=6, pady=5).pack(fill="x")
+        nodes.append(current)
+        number+=1
+        
+        if current==playlist["genre_tail"][genre]:
+            break
+        
+        current=current["genre_next"]
+
+
+
+
 artist_menu.add_command(label="Get Artist Songs", command=do_artist)
+artist_menu.add_command(label="Get Genre Songs", command=do_genre)
 
 
 
@@ -774,11 +840,11 @@ def do_play_current():
 
 
 
-make_btn(ctrl_frame, "▶  Play Song", do_play).pack(side="left", padx=8)
+make_btn(ctrl_frame, "🔍  Specific Song", do_play).pack(side="left", padx=8)
 make_btn(ctrl_frame, "⏮  Prev", do_prev).pack(side="left", padx=8)
 make_btn(ctrl_frame, "▶  Play", do_play_current).pack(side="left", padx=8)
 make_btn(ctrl_frame, "⏭  Next", do_next).pack(side="left", padx=8)
-make_btn(ctrl_frame, "▶  Random Skip", do_random_skip).pack(side="left", padx=8)
+make_btn(ctrl_frame, "🎲 Random Skip", do_random_skip).pack(side="left", padx=8)
 
 
 

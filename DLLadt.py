@@ -9,8 +9,8 @@ def create_node(data):
     node={
         "prev":None,#This creates pointers for the main playlist
         "next":None,
-        "artist_prev":None,#This creates pointers for artist list, basically used for making a list of all songs of an artist
-        "artist_next":None,
+        "artist_next":None,#This creates pointers for artist list, basically used for making a list of all songs of an artist
+        "genre_next":None,#This creates pointers for genre list, basically used for making a list of all songs of a genre
         "data":data   
     }
     
@@ -28,6 +28,8 @@ def create_list():
         "size": 0,
         "artist_head": {},
         "artist_tail": {},
+        "genre_head": {},
+        "genre_tail": {},
         "now_playing": None
     }
     return current
