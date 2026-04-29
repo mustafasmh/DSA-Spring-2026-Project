@@ -9,7 +9,7 @@ import random
 import webbrowser
 
 
-# Each song is a node in our playlist
+
 
 
 def create_song(title, artist, duration, genre, link=""):
@@ -28,7 +28,7 @@ def create_song(title, artist, duration, genre, link=""):
 
 
 
-# A playlist manager needs to have the ability to create a new empty playlist
+
 def create_playlist():
     
     playlist=create_list()
@@ -39,7 +39,7 @@ def create_playlist():
 
 
 
-# A playlist manager needs to have the ability to add a song:
+
 def add_song(playlist, title, artist, duration, genre, link=""):
     new_song = create_song(title, artist, duration, genre, link)
     insertEnd(playlist, new_song["data"])
@@ -51,7 +51,7 @@ def add_song(playlist, title, artist, duration, genre, link=""):
 
 
 
-# A playlist manager needs to have the ability to delete songs:
+
 def remove_song(playlist, title):
     
     
@@ -70,7 +70,31 @@ def remove_song(playlist, title):
 
 
 
-# A playlist manager needs to have the ability to display a playlist:
+
+def update_song(playlist, title, field, new_value):
+    
+    
+    node=search(playlist, "title", title)
+    
+    if node is None:
+        
+        print("Song not found")
+        return False
+    
+    if field=="artist":
+        
+        removefromchain(playlist, node) #remove from old artist chain
+        node["data"][field]=new_value
+        artist_chain(playlist, node) #add to new artist chain
+    else:
+        node["data"][field]=new_value
+    return True
+
+
+
+
+
+
 def display_playlist(playlist):
     
     
@@ -85,7 +109,7 @@ def display_playlist(playlist):
     while True:
         
         song = current["data"]
-        mins = song["duration"] // 60 #
+        mins = song["duration"] // 60
         secs = song["duration"] % 60
         
         print(f"{number}. {song["title"]} - {song["artist"]} | {song["genre"]} | {mins}:{secs:02d}") 

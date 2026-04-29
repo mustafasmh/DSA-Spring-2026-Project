@@ -3,7 +3,8 @@ from tkinter import simpledialog, messagebox
 from playlist import *
 import random
 
-# ── playlist ──────────────────────────────────────────────────────────────────
+# playlist
+
 playlist=create_playlist()
 
 add_song(playlist, "Since I've been loving you", "Led Zeppelin", 444, "Rock", "https://youtu.be/vcIem-L398w?si=KHNQdcdZoVc0v_Dp")
@@ -20,7 +21,8 @@ add_song(playlist, "So Real", "Jeff Buckley", 283, "Alt", "https://www.youtube.c
 add_song(playlist, "In my time of need", "Opeth", 356, "Metal", "https://youtu.be/razzBeBLDG4?si=54rW6vsxNwWMn79T")
 add_song(playlist, "Burden", "Opeth", 461, "Metal", "https://www.youtube.com/watch?v=orwgEEaJln0")
 
-# ── colors ───────────────────────────────────────────────────────────────────
+# colors 
+
 BG="#0d0d0d"
 SIDEBAR="#111111"
 ACCENT="#854ef1"
@@ -35,8 +37,14 @@ FONT_HEAD=("Courier New", 13, "bold")
 FONT_STATS_HEAD=("Courier New", 12, "bold")
 FONT_STATS=("Courier New", 12, "bold")
 FONT_NOW=("Courier New", 10)
+FONT_TIME=("Courier New", 28, "bold")
 
-# ── Phrases ────────────────────────────────────────────────────────────────────
+
+
+
+
+
+# Phrases
 
 top_artist_phrases=[
     "You basically lived in their discography this year.",
@@ -109,19 +117,30 @@ third_genre_phrases=[
 ]
 
 
-# ── window ────────────────────────────────────────────────────────────────────
+
+
+
+
+# window 
+
 window=tk.Tk()
 window.title("Pointlist")
 window.geometry("1000x640")
 window.configure(bg=BG)
 window.resizable(True, True)
 
-# ── header ────────────────────────────────────────────────────────────────────
+
+
+# header 
+
 header=tk.Frame(window, bg=BG, pady=10)
 header.pack(fill="x", padx=20)
 tk.Label(header, text="◈ POINTLIST", bg=BG, fg=ACCENT, font=("Courier New", 20, "bold")).pack(side="left")
 
-# ── dropdown menu bar ─────────────────────────────────────────────────────────
+
+
+# dropdown menu bar 
+
 menubar=tk.Menu(window, bg=SIDEBAR, fg=TEXT, activebackground=ACCENT, activeforeground=BG, font=FONT_MAIN, bd=0, tearoff=0)
 window.config(menu=menubar)
 
@@ -134,8 +153,11 @@ menubar.add_cascade(label="Playlist", menu=playlist_menu)
 menubar.add_cascade(label="Songs", menu=songs_menu)
 menubar.add_cascade(label="Artist", menu=artist_menu)
 menubar.add_cascade(label="Stats", menu=stats_menu)
-6
-# ── song list area ────────────────────────────────────────────────────────────
+
+
+
+# song list area
+
 list_outer=tk.Frame(window, bg=BG)
 list_outer.pack(fill="both", expand=True, padx=20, pady=(0, 5))
 
@@ -157,7 +179,10 @@ canvas.pack(side="left", fill="both", expand=True)
 scrollbar.pack(side="right", fill="y")
 canvas.configure(yscrollcommand=scrollbar.set)
 
-# ── now-playing bar ───────────────────────────────────────────────────────────
+
+
+# now-playing bar 
+
 now_bar=tk.Frame(window, bg=NOW_BG, pady=8)
 now_bar.pack(fill="x", side="bottom")
 
@@ -177,17 +202,25 @@ def make_btn(parent, text, cmd):
     return btn
 
 
-# ── Top Stats──────────────────────────────────────────────────────
+
+# Top Stats
+
 def give_song_stats():
+    
     songs=top_three_songs(playlist)
+    
     if songs is None:
         messagebox.showerror("Pointlist", "Not enough songs played. Play at least 3 different songs first.")
         return
+    
     songs=list(songs)
+    
     artists=top_three_artists(playlist)
+    
     if artists is None:
         messagebox.showerror("Pointlist", "Not enough artists played. Play songs from at least 3 different artists first.")
         return
+    
     artists=list(artists)
 
     statwin=tk.Toplevel(window)
@@ -204,24 +237,32 @@ def give_song_stats():
     ranking=["  #1", "  #2", "  #3"]
 
     for i in range(3):
+        
         phrase=random.choice(phrase_lists[i])
 
         if i==0:
             row_bg=ACCENT
             row_fg=BG
+            
         else:
             row_bg=ROW_A
             row_fg=TEXT
+       
+            
         current_artist=search(playlist,"title",songs[i])['data']['artist']
         tk.Label(statframe, text=f"{ranking[i]}  {songs[i]}  —  {current_artist}", bg=row_bg, fg=row_fg, font=FONT_HEAD, anchor="w", padx=10, pady=8).pack(fill="x")
         tk.Label(statframe, text=f"       {phrase}", bg=BG, fg=STATTEXT, font=FONT_STATS, anchor="w", padx=10, pady=4).pack(fill="x")
 
 
+
 def give_artist_stats():
+    
     artists=top_three_artists(playlist)
+    
     if artists is None:
         messagebox.showerror("Pointlist", "Not enough artists played. Play songs from at least 3 different artists first.")
         return
+    
     artists=list(artists)
 
     astatwin=tk.Toplevel(window)
@@ -238,23 +279,31 @@ def give_artist_stats():
     ranking=["  #1", "  #2", "  #3"]
 
     for i in range(len(artists)):
+        
         phrase=random.choice(phrase_lists[i])
 
         if i==0:
             row_bg=ACCENT
             row_fg=BG
+            
         else:
             row_bg=ROW_A
             row_fg=TEXT
 
+
         tk.Label(astatframe, text=f"{ranking[i]}  {artists[i]}", bg=row_bg, fg=row_fg, font=FONT_HEAD, anchor="w", padx=10, pady=8).pack(fill="x")
         tk.Label(astatframe, text=f"       {phrase}", bg=BG, fg=STATTEXT, font=FONT_STATS, anchor="w", padx=10, pady=4).pack(fill="x")
 
+
+
 def give_genre_stats():
+    
     genres=top_three_genres(playlist)
+    
     if genres is None:
         messagebox.showerror("Pointlist", "Not enough genres played. Play songs from at least 3 different artists/genres first.")
         return
+    
     genres=list(genres)
 
     gstatwin=tk.Toplevel(window)
@@ -271,11 +320,13 @@ def give_genre_stats():
     ranking=["  #1", "  #2", "  #3"]
 
     for i in range(len(genres)):
+        
         phrase=random.choice(phrase_lists[i])
 
         if i==0:
             row_bg=ACCENT
             row_fg=BG
+            
         else:
             row_bg=ROW_A
             row_fg=TEXT
@@ -283,7 +334,10 @@ def give_genre_stats():
         tk.Label(gstatframe, text=f"{ranking[i]}  {genres[i]}", bg=row_bg, fg=row_fg, font=FONT_HEAD, anchor="w", padx=10, pady=8).pack(fill="x")
         tk.Label(gstatframe, text=f"       {phrase}", bg=BG, fg=STATTEXT, font=FONT_STATS, anchor="w", padx=10, pady=4).pack(fill="x")
 
+
+
 def time_spent():
+    
     gstatwin=tk.Toplevel(window)
     gstatwin.title("Time Spent")
     gstatwin.geometry("500x180")
@@ -294,65 +348,92 @@ def time_spent():
     gstatframe=tk.Frame(gstatwin, bg=BG)
     gstatframe.pack(expand=True)
 
-    tk.Label(gstatframe, text="You spent a total of", bg=BG, fg=STATTEXT, font=FONT_NOW).pack()
-    tk.Label(gstatframe, text=f"{minutes} minutes", bg=BG, fg=ACCENT, font=("Courier New", 28, "bold")).pack()
-    tk.Label(gstatframe, text="being pointlist.", bg=BG, fg=STATTEXT, font=FONT_NOW).pack()
+
+    tk.Label(gstatframe, text="You spent a total of", bg=BG, fg=STATTEXT, font=FONT_STATS).pack()
+    tk.Label(gstatframe, text=f"{minutes} minutes", bg=BG, fg=ACCENT, font=FONT_TIME).pack()
+    tk.Label(gstatframe, text="being pointlist.", bg=BG, fg=STATTEXT, font=FONT_STATS).pack()
+
+
 
 stats_menu.add_command(label="Top Songs", command=give_song_stats)
 stats_menu.add_command(label="Top Artists", command=give_artist_stats)
 stats_menu.add_command(label="Top Genre", command=give_genre_stats)
 stats_menu.add_command(label="Total Time Spent", command=time_spent)
-# ── helpers ───────────────────────────────────────────────────────────────────
+
+
+
+
+
+
+# helpers
+
 def refresh():
+    
     for w in list_frame.winfo_children():
         w.destroy()
+
 
     if playlist["size"]==0:
         tk.Label(list_frame, text="Playlist is empty", bg=BG, fg=SUBTEXT, font=FONT_MAIN).pack(pady=20)
         return
 
+
     current=playlist["head"]
     number=1
+    
     while True:
         song=current["data"]
         mins=song["duration"]//60
         secs=song["duration"]%60
         plays=song["play_count"]
         duration=f"{mins}:{secs:02d}"
+        
+        
         text=(f"  {number:>2}.  {song['title']:<38}" f"{song['artist']:<28}" f"{song['genre']:<12}" f"{duration:<7}" f"▶ {plays}")
 
         is_now=(playlist["now_playing"] is not None and playlist["now_playing"] is current)
 
         if is_now:
             row_bg=ACCENT
+            
         else:
             if number%2==0:
                 row_bg=ROW_A
+                
             else:
                 row_bg=ROW_B
 
         if is_now:
             row_fg=BG
+            
         else:
             row_fg=TEXT
 
         tk.Label(list_frame, text=text, bg=row_bg, fg=row_fg, font=FONT_NOW, anchor="w", padx=6, pady=5).pack(fill="x")
 
         number+=1
+        
         if current==playlist["tail"]:
             break
         current=current["next"]
 
 
+
 def ask(prompt, cast=str):
+    
     val=simpledialog.askstring("Pointlist", prompt, parent=window)
+    
     if val is None:
         return None
-    try:
-        return cast(val)
-    except ValueError:
-        messagebox.showerror("Error", f"Expected a number for: {prompt}")
-        return None
+    
+    if cast==int:
+        if not val.strip().lstrip('-').isdigit():
+            messagebox.showerror("Error", f"Expected a number for: {prompt}")
+            return None
+        return int(val)
+    
+    return val
+
 
 
 def pick_song_number(title="Pick a song"):
@@ -360,94 +441,197 @@ def pick_song_number(title="Pick a song"):
     return ask(f"{title}\nEnter song number:", int)
 
 
-# ── playlist menu actions ─────────────────────────────────────────────────────
+# playlist menu actions
+
 def do_shuffle():
+    
     if playlist["now_playing"]:
         current_title=playlist["now_playing"]["data"]["title"]
+        
     else:
         current_title=None
+        
     shuffle(playlist)
+    
     if current_title:
         playlist["now_playing"]=search(playlist, "title", current_title)
+        
     refresh()
     messagebox.showinfo("Pointlist", "Playlist shuffled.")
 
 def do_smart_shuffle():
+    
     if playlist["now_playing"]:
         current_title=playlist["now_playing"]["data"]["title"]
+        
     else:
         current_title=None
+        
     smart_shuffle(playlist)
+    
     if current_title:
         playlist["now_playing"]=search(playlist, "title", current_title)
+        
     refresh()
     messagebox.showinfo("Pointlist", "Playlist smart shuffled.")
 
 def do_sortby():
+    
     choice=simpledialog.askstring("Sort By", "Sort by:\n1. Title\n2. Artist\n3. Duration\n4. Genre", parent=window)
     fields={"1": "title", "2": "artist", "3": "duration", "4": "genre"}
+    
     if choice in fields:
         order=simpledialog.askstring("Order", "Order:\n1. Ascending\n2. Descending", parent=window)
+        
         if order not in ("1", "2"):
             return
-        descending=order=="2"
+        
+        if order=="2":
+            descending=True
+            
+        else:
+            descending=False
+            
+            
         if playlist["now_playing"]:
             current_title=playlist["now_playing"]["data"]["title"]
+            
         else:
             current_title=None
+            
         sortby(playlist, fields[choice], descending)
+        
         if current_title:
             playlist["now_playing"]=search(playlist, "title", current_title)
+            
+            
         refresh()
-        messagebox.showinfo("Pointlist", f"Sorted by {fields[choice]} ({'descending' if descending else 'ascending'}).")
+        
+        if descending==True:
+            messagebox.showinfo("Pointlist", f"Sorted by {fields[choice]} (descending).")
+        else:
+            messagebox.showinfo("Pointlist", f"Sorted by {fields[choice]} (ascending).")
 
 playlist_menu.add_command(label="Shuffle", command=do_shuffle)
 playlist_menu.add_command(label="Smart Shuffle", command=do_smart_shuffle)
 playlist_menu.add_command(label="Sort By", command=do_sortby)
 
 
-# ── songs menu actions ────────────────────────────────────────────────────────
+
+
+
+
+# songs menu actions 
+
 def do_add():
+    
     title=ask("Song title:")
+    
     if title is None:
         return
+    
     artist=ask("Artist:")
+    
     if artist is None:
         return
+    
     duration=ask("Duration (seconds):", int)
+    
     if duration is None:
         return
+    
     genre=ask("Genre:")
+    
     if genre is None:
         return
+    
     link=ask("YouTube link (leave blank to skip):")
+    
     if link is None:
         link=""
+        
     add_song(playlist, title, artist, duration, genre, link)
     refresh()
+    
     messagebox.showinfo("Pointlist", f"Added: {title}")
 
-def do_remove():
-    title=ask("Song title to remove:")
+
+
+def do_update():
+    
+    title=ask("Song title to update:")
+    
     if title is None:
         return
+    
     node=search(playlist, "title", title)
+    
     if node is None:
         messagebox.showerror("Pointlist", "Song not found.")
         return
+    
+    field=ask("What to update?\n1. Title\n2. Artist\n3. Duration\n4. Genre\n5. Link")
+    
+    fields={"1": "title", "2": "artist", "3": "duration", "4": "genre", "5": "link"}
+    
+    if field not in fields:
+        return
+    
+    if fields[field]=="duration":
+        new_value=ask("New value:", int)
+        
+    else:
+        new_value=ask("New value:")
+        
+    if new_value is None:
+        return
+    
+    update_song(playlist, title, fields[field], new_value)
+    refresh()
+    
+    messagebox.showinfo("Pointlist", "Song updated.")
+
+
+
+def do_remove():
+    
+    title=ask("Song title to remove:")
+    
+    if title is None:
+        return
+    
+    node=search(playlist, "title", title)
+    
+    if node is None:
+        messagebox.showerror("Pointlist", "Song not found.")
+        return
+    
     removefromchain(playlist, node)
     delete_node(playlist, node)
     refresh()
+    
     messagebox.showinfo("Pointlist", f"Removed: {title}")
+
+
 
 songs_menu.add_command(label="Add Song", command=do_add)
 songs_menu.add_command(label="Remove Song", command=do_remove)
+songs_menu.add_command(label="Update Song", command=do_update)
 
-# ── artist menu actions ───────────────────────────────────────────────────────
+
+
+
+
+
+# artist menu actions
+
 def do_artist():
+    
     artist=ask("Artist name:")
+    
     if artist is None:
         return
+    
     if artist not in playlist["artist_head"]:
         messagebox.showerror("Pointlist", "Artist not found.")
         return
@@ -465,76 +649,130 @@ def do_artist():
     current=playlist["artist_head"][artist]
     nodes=[]
     number=1
+    
+    
     while True:
+        
         song=current["data"]
         mins=song["duration"]//60
         secs=song["duration"]%60
         duration=f"{mins}:{secs:02d}"
+        
+        
         text=(f"  {number}.  {song['title']:<38}{song['genre']:<12}{duration:<7}▶ {song['play_count']}")
         if number%2==0:
             tk.Label(frame, text=text, bg=ROW_A, fg=TEXT, font=FONT_NOW, anchor="w", padx=6, pady=5).pack(fill="x")
+            
         else:
             tk.Label(frame, text=text, bg=ROW_B, fg=TEXT, font=FONT_NOW, anchor="w", padx=6, pady=5).pack(fill="x")
         nodes.append(current)
         number+=1
+        
         if current==playlist["artist_tail"][artist]:
             break
+        
         current=current["artist_next"]
 
     def play_from_artist():
+        
         num=ask("Enter song number to play:", int)
+        
         if num is None or num<1 or num>len(nodes):
             return
+        
         _play_node(nodes[num-1])
         win.destroy()
 
     make_btn(win, "▶ Play a Song", play_from_artist).pack(pady=10)
 
+
+
 artist_menu.add_command(label="Get Artist Songs", command=do_artist)
 
-# ── playback ──────────────────────────────────────────────────────────────────
+
+
+
+
+
+# playback 
+
 def _play_node(node):
+    
     play_song(playlist, node["data"]["title"])
     now_label.config(text=f"♪  {node['data']['title']}  —  {node['data']['artist']}")
     refresh()
 
+
+
 def do_play():
+    
     num=ask("Enter song number to play:", int)
+    
     if num is None or num<1 or num>playlist["size"]:
         return
+    
     current=playlist["head"]
-    for _ in range(num-1):
+    
+    for i in range(num-1):
+        
         current=current["next"]
     _play_node(current)
 
+
+
 def do_random_skip():
+    
     song=random_skip(playlist)
     _play_node(song)
 
+
+
 def do_next():
+    
     np=playlist["now_playing"]
+    
     if np and np["next"]:
-        nxt=np["next"]
+        next=np["next"]
+        
     else:
-        nxt=playlist["head"]
-    playlist["now_playing"]=nxt
-    now_label.config(text=f"♪  {nxt['data']['title']}  —  {nxt['data']['artist']}")
+        next=playlist["head"]
+        
+    playlist["now_playing"]=next
+    
+    
+    now_label.config(text=f"♪  {next['data']['title']}  —  {next['data']['artist']}")
     refresh()
+
+
 
 def do_prev():
+    
     np=playlist["now_playing"]
+    
     if np and np["prev"]:
-        prv=np["prev"]
+        prev=np["prev"]
+        
     else:
-        prv=playlist["tail"]
-    playlist["now_playing"]=prv
-    now_label.config(text=f"♪  {prv['data']['title']}  —  {prv['data']['artist']}")
+        
+        prev=playlist["tail"]
+        
+    playlist["now_playing"]=prev
+    
+    
+    now_label.config(text=f"♪  {prev['data']['title']}  —  {prev['data']['artist']}")
     refresh()
 
+
+
 def do_play_current():
+    
     if playlist["now_playing"] is None:
         playlist["now_playing"]=playlist["head"]
+        
+        
     _play_node(playlist["now_playing"])
+
+
 
 make_btn(ctrl_frame, "▶  Play Song", do_play).pack(side="left", padx=8)
 make_btn(ctrl_frame, "⏮  Prev", do_prev).pack(side="left", padx=8)
@@ -542,6 +780,10 @@ make_btn(ctrl_frame, "▶  Play", do_play_current).pack(side="left", padx=8)
 make_btn(ctrl_frame, "⏭  Next", do_next).pack(side="left", padx=8)
 make_btn(ctrl_frame, "▶  Random Skip", do_random_skip).pack(side="left", padx=8)
 
-# ── init ──────────────────────────────────────────────────────────────────────
+
+
+
+
+
 refresh()
 window.mainloop()
