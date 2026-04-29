@@ -389,7 +389,7 @@ def refresh():
         duration=f"{mins}:{secs:02d}"
         
         
-        text=(f"  {number:>2}.  {song['title']:<38}" f"{song['artist']:<28}" f"{song['genre']:<12}" f"{duration:<7}" f"▶ {plays}")
+        text=(f"  {number:>2}.  {song['title']:<38}" f"{song['artist']:<28}" f"{song['genre']:<12}" f"{duration:<7}" f"🎵 {plays}")
 
         is_now=(playlist["now_playing"] is not None and playlist["now_playing"] is current)
 
@@ -660,7 +660,7 @@ def do_artist():
         duration=f"{mins}:{secs:02d}"
         
         
-        text=(f"  {number}.  {song['title']:<38}{song['genre']:<12}{duration:<7}▶ {song['play_count']}")
+        text=(f"  {number}.  {song['title']:<38}{song['genre']:<12}{duration:<7}🎵 {song['play_count']}")
         if number%2==0:
             tk.Label(frame, text=text, bg=ROW_A, fg=TEXT, font=FONT_NOW, anchor="w", padx=6, pady=5).pack(fill="x")
             
@@ -735,7 +735,7 @@ def do_genre():
         duration=f"{mins}:{secs:02d}"
         
         
-        text=(f"  {number}.  {song['title']:<38}{song['genre']:<12}{duration:<7}▶ {song['play_count']}")
+        text=(f"  {number}.  {song['title']:<38}{song['genre']:<12}{duration:<7}🎵 {song['play_count']}")
         if number%2==0:
             tk.Label(frame, text=text, bg=ROW_A, fg=TEXT, font=FONT_NOW, anchor="w", padx=6, pady=5).pack(fill="x")
             
