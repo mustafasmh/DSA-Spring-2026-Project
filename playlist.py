@@ -323,6 +323,9 @@ def top_three_artists(playlist):
         else:
             current=current['next']
     
+    if len(frequency)<3:
+        return None 
+    
     first=-1000
     second=-1000
     third=-1000
@@ -368,6 +371,9 @@ def top_three_songs(playlist):
         else:
             current=current['next']
     
+    if len(frequency)<3:
+        return None 
+    
     first=-1000
     second=-1000
     third=-1000
@@ -412,6 +418,9 @@ def top_three_genres(playlist):
             break
         else:
             current=current['next']
+            
+    if len(frequency)<3:
+        return None 
     
     first=-1000
     second=-1000
@@ -440,14 +449,14 @@ def top_three_genres(playlist):
 
 
 
-def top_stats(playlist):
+# def top_stats(playlist):
 
-    stats=[]
-    stats.append(top_three_artists(playlist))
-    stats.append(top_three_genres(playlist))
-    stats.append(top_three_songs(playlist))
+#     stats=[]
+#     stats.append(top_three_artists(playlist))
+#     stats.append(top_three_genres(playlist))
+#     stats.append(top_three_songs(playlist))
 
     
     
 
-    return stats
+#     return stats

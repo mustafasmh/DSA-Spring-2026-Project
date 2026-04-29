@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import simpledialog, messagebox
 from playlist import *
+import random
 
 # ── playlist ──────────────────────────────────────────────────────────────────
 playlist=create_playlist()
@@ -25,12 +26,64 @@ SIDEBAR="#111111"
 ACCENT="#854ef1"
 TEXT="#e8e8e8"
 SUBTEXT="#888888"
+STATTEXT="#CCC6C6"
 ROW_A="#161616"
 ROW_B="#111111"
 NOW_BG="#111111"
 FONT_MAIN=("Courier New", 11)
 FONT_HEAD=("Courier New", 13, "bold")
+FONT_STATS_HEAD=("Courier New", 13, "bold")
+FONT_STATS=("Courier New", 11, "bold")
 FONT_NOW=("Courier New", 10)
+
+# ── Phrases ────────────────────────────────────────────────────────────────────
+
+top_artist_phrases=[
+    "You basically lived in their discography this year.",
+    "This was your clear #1. Not even close.",
+    "You played them so much it's actually a little concerning.",
+    "Your top artist. You clearly don't get tired of this sound.",
+    "The data says you're obsessed. We're just reporting it."
+]
+
+second_artist_phrases=[
+    "Always in rotation. A solid backup for when the #1 was on pause.",
+    "They took up a massive chunk of your airtime.",
+    "The runners-up. Still heavy hitters in your queue.",
+    "You clearly vibe with this. They stayed in the top three for a reason."
+]
+
+third_artist_phrases=[
+    "Coming in at #3. They held their own against the heavy hitters.",
+    "The bronze medalist of your 2026 queue.",
+    "A frequent guest in your rotation. They rounded out your top three.",
+    "They secured the final spot on your podium.",
+    "You listened to them enough to put them here, but not enough to beat the others."
+]
+
+top_song_phrases=[
+    "This song stayed with you the most.",
+    "Your #1 track. You hit the replay button until it gave up.",
+    "The soundtrack to your year. You never seemed to get tired of it.",
+    "If your 2026 has a theme song, this is definitely it.",
+    "You and this track were inseparable. The data doesn't lie."
+]
+
+second_song_phrases=[
+    "Your silver medalist. It kept your top song on its toes.",
+    "Always a vibe. You turned to this one more than almost anything else.",
+    "A high-rotation staple. It defined a huge part of your listening.",
+    "You clearly had this one on loop for a significant chunk of the year."
+]
+
+third_song_phrases=[
+    "Coming in at #3. It secured a solid spot in your top rotation.",
+    "The final piece of your top three. A heavy hitter in its own right.",
+    "You kept coming back to this one. It rounded out your year perfectly.",
+    "It didn't quite hit #1, but it was never far from the play button.",
+    "A frequent favorite that held its own against the top two."
+]
+
 
 # ── window ────────────────────────────────────────────────────────────────────
 window=tk.Tk()
@@ -51,10 +104,12 @@ window.config(menu=menubar)
 playlist_menu=tk.Menu(menubar, bg=SIDEBAR, fg=TEXT, activebackground=ACCENT, activeforeground=BG, font=FONT_MAIN, tearoff=0)
 songs_menu=tk.Menu(menubar, bg=SIDEBAR, fg=TEXT, activebackground=ACCENT, activeforeground=BG, font=FONT_MAIN, tearoff=0)
 artist_menu=tk.Menu(menubar, bg=SIDEBAR, fg=TEXT, activebackground=ACCENT, activeforeground=BG, font=FONT_MAIN, tearoff=0)
+stats_menu=tk.Menu(menubar, bg=SIDEBAR, fg=TEXT, activebackground=ACCENT, activeforeground=BG, font=FONT_MAIN, tearoff=0)
 
 menubar.add_cascade(label="Playlist", menu=playlist_menu)
 menubar.add_cascade(label="Songs", menu=songs_menu)
 menubar.add_cascade(label="Artist", menu=artist_menu)
+menubar.add_cascade(label="Stats", menu=stats_menu)
 
 # ── song list area ────────────────────────────────────────────────────────────
 list_outer=tk.Frame(window, bg=BG)
@@ -63,6 +118,7 @@ list_outer.pack(fill="both", expand=True, padx=20, pady=(0, 5))
 canvas=tk.Canvas(list_outer, bg=BG, highlightthickness=0)
 scrollbar=tk.Scrollbar(list_outer, orient="vertical", command=canvas.yview)
 list_frame=tk.Frame(canvas, bg=BG)
+
 def update_scroll(event):
     canvas.configure(scrollregion=canvas.bbox("all"))
 
@@ -87,9 +143,92 @@ now_label.pack(pady=(2, 4))
 ctrl_frame=tk.Frame(now_bar, bg=NOW_BG)
 ctrl_frame.pack()
 
-def make_btn(parent, text, cmd):
-    return tk.Button(parent, text=text, command=cmd, bg=SIDEBAR, fg=TEXT, activebackground=ACCENT, activeforeground=BG, font=FONT_MAIN, relief="flat", padx=14, pady=4, cursor="hand2")
+def keep_flat(event):
+    event.widget.config(relief="flat")
 
+def make_btn(parent, text, cmd):
+    btn=tk.Button(parent, text=text, command=cmd, bg=SIDEBAR, fg=TEXT, activebackground=ACCENT, activeforeground=BG, font=FONT_MAIN, relief="flat", padx=14, pady=4, cursor="hand2", takefocus=0)
+    btn.bind("<ButtonPress-1>", keep_flat)
+    btn.bind("<ButtonRelease-1>", keep_flat)
+    return btn
+
+
+# ── Top Stats──────────────────────────────────────────────────────
+def give_song_stats():
+    songs=top_three_songs(playlist)
+    if songs is None:
+        messagebox.showerror("Pointlist", "Not enough songs played. Play at least 3 different songs first.")
+        return
+    songs=list(songs)
+    artists=top_three_artists(playlist)
+    if artists is None:
+        messagebox.showerror("Pointlist", "Not enough artists played. Play songs from at least 3 different artists first.")
+        return
+    artists=list(artists)
+
+    statwin=tk.Toplevel(window)
+    statwin.title("Top Songs")
+    statwin.geometry("800x320")
+    statwin.configure(bg=BG)
+
+    tk.Label(statwin, text="Your Top 3 Songs", bg=BG, fg=ACCENT, font=FONT_HEAD).pack(pady=(16, 10))
+
+    statframe=tk.Frame(statwin, bg=BG)
+    statframe.pack(fill="both", expand=True, padx=20)
+
+    phrase_lists=[top_song_phrases, second_song_phrases, third_song_phrases]
+    ranking=["  #1", "  #2", "  #3"]
+
+    for i in range(3):
+        phrase=random.choice(phrase_lists[i])
+
+        if i==0:
+            row_bg=ACCENT
+            row_fg=BG
+        else:
+            row_bg=ROW_A
+            row_fg=TEXT
+
+        tk.Label(statframe, text=f"{ranking[i]}  {songs[i]}  —  {artists[i]}", bg=row_bg, fg=row_fg, font=FONT_HEAD, anchor="w", padx=10, pady=8).pack(fill="x", pady=(8, 0))
+        tk.Label(statframe, text=f"       {phrase}", bg=BG, fg=STATTEXT, font=FONT_STATS, anchor="w", padx=10, pady=4).pack(fill="x")
+
+
+def give_artist_stats():
+    artists=top_three_artists(playlist)
+    if artists is None:
+        messagebox.showerror("Pointlist", "Not enough artists played. Play songs from at least 3 different artists first.")
+        return
+    artists=list(artists)
+
+    astatwin=tk.Toplevel(window)
+    astatwin.title("Top Artists")
+    astatwin.geometry("800x320")
+    astatwin.configure(bg=BG)
+
+    tk.Label(astatwin, text="Your Top 3 Artists", bg=BG, fg=ACCENT, font=FONT_HEAD).pack(pady=10)
+
+    astatframe=tk.Frame(astatwin, bg=BG)
+    astatframe.pack(fill="both", expand=True, padx=15)
+
+    phrase_lists=[top_artist_phrases, second_artist_phrases, third_artist_phrases]
+    ranking=["  #1", "  #2", "  #3"]
+
+    for i in range(len(artists)):
+        phrase=random.choice(phrase_lists[i])
+
+        if i==0:
+            row_bg=ACCENT
+            row_fg=BG
+        else:
+            row_bg=ROW_A
+            row_fg=TEXT
+
+        tk.Label(astatframe, text=f"{ranking[i]}  {artists[i]}", bg=row_bg, fg=row_fg, font=FONT_HEAD, anchor="w", padx=10, pady=8).pack(fill="x", pady=(8, 0))
+        tk.Label(astatframe, text=f"       {phrase}", bg=BG, fg=STATTEXT, font=FONT_STATS, anchor="w", padx=10, pady=4).pack(fill="x")
+
+
+stats_menu.add_command(label="Top Songs", command=give_song_stats)
+stats_menu.add_command(label="Top Artists", command=give_artist_stats)
 
 # ── helpers ───────────────────────────────────────────────────────────────────
 def refresh():
@@ -108,15 +247,22 @@ def refresh():
         secs=song["duration"]%60
         plays=song["play_count"]
         duration=f"{mins}:{secs:02d}"
-        text=(f"  {number:>2}.  {song['title']:<38}"
-              f"{song['artist']:<28}"
-              f"{song['genre']:<12}"
-              f"{duration:<7}"
-              f"▶ {plays}")
+        text=(f"  {number:>2}.  {song['title']:<38}" f"{song['artist']:<28}" f"{song['genre']:<12}" f"{duration:<7}" f"▶ {plays}")
 
         is_now=(playlist["now_playing"] is not None and playlist["now_playing"] is current)
-        row_bg=ACCENT if is_now else (ROW_A if number%2==0 else ROW_B)
-        row_fg=BG if is_now else TEXT
+
+        if is_now:
+            row_bg=ACCENT
+        else:
+            if number%2==0:
+                row_bg=ROW_A
+            else:
+                row_bg=ROW_B
+
+        if is_now:
+            row_fg=BG
+        else:
+            row_fg=TEXT
 
         tk.Label(list_frame, text=text, bg=row_bg, fg=row_fg, font=FONT_NOW, anchor="w", padx=6, pady=5).pack(fill="x")
 
@@ -253,7 +399,10 @@ def do_artist():
         secs=song["duration"]%60
         duration=f"{mins}:{secs:02d}"
         text=(f"  {number}.  {song['title']:<38}{song['genre']:<12}{duration:<7}▶ {song['play_count']}")
-        tk.Label(frame, text=text, bg=ROW_A if number%2==0 else ROW_B, fg=TEXT, font=FONT_NOW, anchor="w", padx=6, pady=5).pack(fill="x")
+        if number%2==0:
+            tk.Label(frame, text=text, bg=ROW_A, fg=TEXT, font=FONT_NOW, anchor="w", padx=6, pady=5).pack(fill="x")
+        else:
+            tk.Label(frame, text=text, bg=ROW_B, fg=TEXT, font=FONT_NOW, anchor="w", padx=6, pady=5).pack(fill="x")
         nodes.append(current)
         number+=1
         if current==playlist["artist_tail"][artist]:
@@ -295,14 +444,20 @@ def do_random_skip():
 
 def do_next():
     np=playlist["now_playing"]
-    nxt=np["next"] if (np and np["next"]) else playlist["head"]
+    if np and np["next"]:
+        nxt=np["next"]
+    else:
+        nxt=playlist["head"]
     playlist["now_playing"]=nxt
     now_label.config(text=f"♪  {nxt['data']['title']}  —  {nxt['data']['artist']}")
     refresh()
 
 def do_prev():
     np=playlist["now_playing"]
-    prv=np["prev"] if (np and np["prev"]) else playlist["tail"]
+    if np and np["prev"]:
+        prv=np["prev"]
+    else:
+        prv=playlist["tail"]
     playlist["now_playing"]=prv
     now_label.config(text=f"♪  {prv['data']['title']}  —  {prv['data']['artist']}")
     refresh()
