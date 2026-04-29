@@ -271,14 +271,18 @@ def sortby(playlist, field, descending):
 
 def play_song(playlist, title):
     node=search(playlist, "title", title)
+
     if node is None:
         print("Song not found")
         return
+    
     node["data"]["play_count"]+=1
-    playlist["now_playing"]=node
-    print(f"Now Playing: {node['data']['title']} - {node['data']['artist']}")
-    webbrowser.open(node["data"]["link"])
 
+    playlist["now_playing"]=node
+    
+    print(f"Now Playing: {node['data']['title']} - {node['data']['artist']}")
+    if node["data"]["link"]:
+        webbrowser.open(node["data"]["link"])
 
 def smart_shuffle(playlist):
     sortby(playlist, 'play_count', True) #sorts by amount of plays to predict what the user might want next
@@ -448,15 +452,25 @@ def top_three_genres(playlist):
     return firstgenre, secondgenre, thirdgenre
 
 
+def listening_minutes(playlist):
 
-# def top_stats(playlist):
-
-#     stats=[]
-#     stats.append(top_three_artists(playlist))
-#     stats.append(top_three_genres(playlist))
-#     stats.append(top_three_songs(playlist))
-
+    current=playlist["head"]
     
+    time=0
+
+
+    if playlist["size"]!=0:
+    
+        while True:
+            
+            if current["data"]["play_count"]>0:
+                time+=current["data"]["play_count"]*current["data"]["duration"]
+            
+            if current==playlist["tail"]:
+                break
+            current=current["next"]
     
 
-#     return stats
+    minutes=time//60
+
+    return minutes

@@ -32,8 +32,8 @@ ROW_B="#111111"
 NOW_BG="#111111"
 FONT_MAIN=("Courier New", 11)
 FONT_HEAD=("Courier New", 13, "bold")
-FONT_STATS_HEAD=("Courier New", 13, "bold")
-FONT_STATS=("Courier New", 11, "bold")
+FONT_STATS_HEAD=("Courier New", 12, "bold")
+FONT_STATS=("Courier New", 12, "bold")
 FONT_NOW=("Courier New", 10)
 
 # ── Phrases ────────────────────────────────────────────────────────────────────
@@ -66,7 +66,7 @@ top_song_phrases=[
     "Your #1 track. You hit the replay button until it gave up.",
     "The soundtrack to your year. You never seemed to get tired of it.",
     "If your 2026 has a theme song, this is definitely it.",
-    "You and this track were inseparable. The data doesn't lie."
+*    "You and this track were inseparable. The data doesn't lie."
 ]
 
 second_song_phrases=[
@@ -82,6 +82,30 @@ third_song_phrases=[
     "You kept coming back to this one. It rounded out your year perfectly.",
     "It didn't quite hit #1, but it was never far from the play button.",
     "A frequent favorite that held its own against the top two."
+]
+
+top_genre_phrases=[
+    "Your absolute go-to. If your year had a flavor profile, this was it.",
+    "You didn't just listen to this genre; you made it your entire personality.",
+    "The undisputed heavyweight champion of your library.",
+    "You spent more time here than anywhere else.",
+    "The data is in: you are officially a disciple of this sound."
+]
+
+second_genre_phrases=[
+    "The silver medalist. It kept your main vibe from getting too predictable.",
+    "A massive part of your sonic identity this year. Always in the mix.",
+    "Your secondary obsession. You strayed from the #1 spot, but usually ended up here.",
+    "The runner-up. It dominated your speakers whenever you needed a change of pace.",
+    "Solidly in second. This genre was the backbone of your daily rotation."
+]
+
+third_genre_phrases=[
+    "Coming in at #3. It provided the perfect counter-balance to your top two.",
+    "The bronze medalist. It held its own against the heavy hitters.",
+    "Rounding out your top three. You clearly have a soft spot for this sound.",
+    "It didn't take the crown, but it definitely stayed in your weekly rotation.",
+    "The final piece of your musical puzzle. It kept things interesting."
 ]
 
 
@@ -110,7 +134,7 @@ menubar.add_cascade(label="Playlist", menu=playlist_menu)
 menubar.add_cascade(label="Songs", menu=songs_menu)
 menubar.add_cascade(label="Artist", menu=artist_menu)
 menubar.add_cascade(label="Stats", menu=stats_menu)
-
+6
 # ── song list area ────────────────────────────────────────────────────────────
 list_outer=tk.Frame(window, bg=BG)
 list_outer.pack(fill="both", expand=True, padx=20, pady=(0, 5))
@@ -188,8 +212,8 @@ def give_song_stats():
         else:
             row_bg=ROW_A
             row_fg=TEXT
-
-        tk.Label(statframe, text=f"{ranking[i]}  {songs[i]}  —  {artists[i]}", bg=row_bg, fg=row_fg, font=FONT_HEAD, anchor="w", padx=10, pady=8).pack(fill="x", pady=(8, 0))
+        current_artist=search(playlist,"title",songs[i])['data']['artist']
+        tk.Label(statframe, text=f"{ranking[i]}  {songs[i]}  —  {current_artist}", bg=row_bg, fg=row_fg, font=FONT_HEAD, anchor="w", padx=10, pady=8).pack(fill="x")
         tk.Label(statframe, text=f"       {phrase}", bg=BG, fg=STATTEXT, font=FONT_STATS, anchor="w", padx=10, pady=4).pack(fill="x")
 
 
@@ -223,13 +247,61 @@ def give_artist_stats():
             row_bg=ROW_A
             row_fg=TEXT
 
-        tk.Label(astatframe, text=f"{ranking[i]}  {artists[i]}", bg=row_bg, fg=row_fg, font=FONT_HEAD, anchor="w", padx=10, pady=8).pack(fill="x", pady=(8, 0))
+        tk.Label(astatframe, text=f"{ranking[i]}  {artists[i]}", bg=row_bg, fg=row_fg, font=FONT_HEAD, anchor="w", padx=10, pady=8).pack(fill="x")
         tk.Label(astatframe, text=f"       {phrase}", bg=BG, fg=STATTEXT, font=FONT_STATS, anchor="w", padx=10, pady=4).pack(fill="x")
 
+def give_genre_stats():
+    genres=top_three_genres(playlist)
+    if genres is None:
+        messagebox.showerror("Pointlist", "Not enough genres played. Play songs from at least 3 different artists/genres first.")
+        return
+    genres=list(genres)
+
+    gstatwin=tk.Toplevel(window)
+    gstatwin.title("Top Genres")
+    gstatwin.geometry("800x320")
+    gstatwin.configure(bg=BG)
+
+    tk.Label(gstatwin, text="Your Top 3 Genres", bg=BG, fg=ACCENT, font=FONT_HEAD).pack(pady=10)
+
+    gstatframe=tk.Frame(gstatwin, bg=BG)
+    gstatframe.pack(fill="both", expand=True, padx=15)
+
+    phrase_lists=[top_genre_phrases, second_genre_phrases, third_genre_phrases]
+    ranking=["  #1", "  #2", "  #3"]
+
+    for i in range(len(genres)):
+        phrase=random.choice(phrase_lists[i])
+
+        if i==0:
+            row_bg=ACCENT
+            row_fg=BG
+        else:
+            row_bg=ROW_A
+            row_fg=TEXT
+
+        tk.Label(gstatframe, text=f"{ranking[i]}  {genres[i]}", bg=row_bg, fg=row_fg, font=FONT_HEAD, anchor="w", padx=10, pady=8).pack(fill="x")
+        tk.Label(gstatframe, text=f"       {phrase}", bg=BG, fg=STATTEXT, font=FONT_STATS, anchor="w", padx=10, pady=4).pack(fill="x")
+
+def time_spent():
+    gstatwin=tk.Toplevel(window)
+    gstatwin.title("Time Spent")
+    gstatwin.geometry("500x180")
+    gstatwin.configure(bg=BG)
+
+    minutes=listening_minutes(playlist)
+
+    gstatframe=tk.Frame(gstatwin, bg=BG)
+    gstatframe.pack(expand=True)
+
+    tk.Label(gstatframe, text="You spent a total of", bg=BG, fg=STATTEXT, font=FONT_NOW).pack()
+    tk.Label(gstatframe, text=f"{minutes} minutes", bg=BG, fg=ACCENT, font=("Courier New", 28, "bold")).pack()
+    tk.Label(gstatframe, text="being pointlist.", bg=BG, fg=STATTEXT, font=FONT_NOW).pack()
 
 stats_menu.add_command(label="Top Songs", command=give_song_stats)
 stats_menu.add_command(label="Top Artists", command=give_artist_stats)
-
+stats_menu.add_command(label="Top Genre", command=give_genre_stats)
+stats_menu.add_command(label="Total Time Spent", command=time_spent)
 # ── helpers ───────────────────────────────────────────────────────────────────
 def refresh():
     for w in list_frame.winfo_children():
@@ -422,11 +494,8 @@ artist_menu.add_command(label="Get Artist Songs", command=do_artist)
 
 # ── playback ──────────────────────────────────────────────────────────────────
 def _play_node(node):
-    node["data"]["play_count"]+=1
-    playlist["now_playing"]=node
+    play_song(playlist, node["data"]["title"])
     now_label.config(text=f"♪  {node['data']['title']}  —  {node['data']['artist']}")
-    if node["data"]["link"]:
-        webbrowser.open(node["data"]["link"])
     refresh()
 
 def do_play():
