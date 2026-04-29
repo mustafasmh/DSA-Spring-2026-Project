@@ -272,5 +272,21 @@ def mergeSort(arr,left,right,field, descending):
         merge(arr,left,mid,right,field, descending)
 
 
+
+def insertion_sort(arr, field, descending=False):
+    
+    for i in range(1, len(arr)):
+        
+        key=arr[i]
+        j=i-1
+        
+        while j>=0 and (arr[j]["data"][field]>key["data"][field]) != descending:
+            arr[j+1]=arr[j]
+            j-=1
+            
+        arr[j+1]=key
+
+    return arr
+
 def to_seconds(mins, secs=0):
     return mins*60+secs

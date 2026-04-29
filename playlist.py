@@ -58,17 +58,14 @@ def remove_song(playlist, title, artist):
     
     node=search_title_artist(playlist, title, artist)
     
-    if node in search(playlist,"artist",artist):
-    
-        if node is None:
-            
-            print("Song not found")
-            return
+    if node is None:
+        print("Song not found")
+        return
 
-        removefromchain(playlist,node)
-        removefromgenrechain(playlist,node)
-        delete_node(playlist, node)
-        print("Song removed successfully")
+    removefromchain(playlist,node)
+    removefromgenrechain(playlist,node)
+    delete_node(playlist, node)
+    print("Song removed successfully")
 
 
 
@@ -346,10 +343,10 @@ def shuffle(playlist):
             current=current["next"]
 
 
-    
-    
-    
-    
+
+
+
+
 def sortby(playlist, field, descending):
 
     arr=[]
@@ -407,8 +404,6 @@ def play_song(playlist, title):
     if node["data"]["link"]:
         webbrowser.open(node["data"]["link"])
 
-def smart_shuffle(playlist):
-    sortby(playlist, 'play_count', True) #sorts by amount of plays to predict what the user might want next
 
 
 def random_skip(playlist): #skips to a random song in the playlist without changing playlist order
@@ -597,6 +592,59 @@ def listening_minutes(playlist):
     minutes=time//60
 
     return minutes
+
+
+
+
+
+
+def recommended_songs(playlist):
+    if playlist["size"]==0:
+        return None
+
+    #find top genre
+    frequency={}
+    current=playlist["head"]
+    
+    
+    while True:
+        genre=current["data"]["genre"]
+        
+        if current["data"]["play_count"]!=0:
+            
+            if genre not in frequency:
+                frequency[genre]=current["data"]["play_count"]
+                
+            else:
+                frequency[genre]+=current["data"]["play_count"]
+                
+        if current==playlist["tail"]:
+            break
+        
+        current=current["next"]
+
+    if len(frequency)==0:
+        return None
+
+    top_genre=max(frequency, key=frequency.get)
+
+    # get songs from that genre sorted by play count ascending
+    songs=[]
+    current=playlist["genre_head"][top_genre]
+    
+    while True:
+        songs.append(current)
+        
+        if current==playlist["genre_tail"][top_genre]:
+            break
+        current=current["genre_next"]
+
+    #simple insertion sort by play count ascending
+    songs=insertion_sort(songs, "play_count", False)
+
+    return (songs, top_genre)
+
+
 
 
 

@@ -187,7 +187,7 @@ canvas.configure(yscrollcommand=scrollbar.set)
 now_bar=tk.Frame(window, bg=NOW_BG, pady=8)
 now_bar.pack(fill="x", side="bottom")
 
-now_label=tk.Label(now_bar, text="♪  Nothing playing", bg=NOW_BG, fg=ACCENT, font=FONT_HEAD)
+now_label=tk.Label(now_bar, text="♪  Nothing selected", bg=NOW_BG, fg=ACCENT, font=FONT_HEAD)
 now_label.pack(pady=(2, 4))
 
 ctrl_frame=tk.Frame(now_bar, bg=NOW_BG)
@@ -470,7 +470,7 @@ def do_shuffle():
     shuffle(playlist)
     
     if current_title:
-        playlist["now_playing"]=search_title_artist(playlist, "title", current_title,current_artist)
+        playlist["now_playing"]=search_title_artist(playlist, current_title,current_artist)
         
     refresh()
     messagebox.showinfo("Pointlist", "Playlist shuffled.")
@@ -488,15 +488,15 @@ def do_smart_shuffle():
     smart_shuffle(playlist)
     
     if current_title:
-        playlist["now_playing"]=search_title_artist(playlist, "title", current_title,current_artist)
+        playlist["now_playing"]=search_title_artist(playlist,current_title,current_artist)
         
     refresh()
     messagebox.showinfo("Pointlist", "Playlist smart shuffled.")
 
 def do_sortby():
     
-    choice=simpledialog.askstring("Sort By", "Sort by:\n1. Title\n2. Artist\n3. Duration\n4. Genre", parent=window)
-    fields={"1": "title", "2": "artist", "3": "duration", "4": "genre"}
+    choice=simpledialog.askstring("Sort By", "Sort by:\n1. Title\n2. Artist\n3. Duration\n4. Genre\n5. Play Count", parent=window)
+    fields={"1": "title", "2": "artist", "3": "duration", "4": "genre", "5": "play_count"}
     
     if choice in fields:
         order=simpledialog.askstring("Order", "Order:\n1. Ascending\n2. Descending", parent=window)
@@ -531,7 +531,6 @@ def do_sortby():
             messagebox.showinfo("Pointlist", f"Sorted by {fields[choice]} (ascending).")
 
 playlist_menu.add_command(label="Shuffle", command=do_shuffle)
-playlist_menu.add_command(label="Smart Shuffle", command=do_smart_shuffle)
 playlist_menu.add_command(label="Sort By", command=do_sortby)
 
 
@@ -660,9 +659,11 @@ def do_remove():
         messagebox.showerror("Pointlist", "Song not found.")
         return
     
-    removefromchain(playlist, node)
-    removefromgenrechain(playlist, node)
-    delete_node(playlist, node)
+    if playlist["now_playing"] is node:
+        playlist["now_playing"]=None
+        now_label.config(text="♪  Nothing selected")
+    
+    remove_song(playlist, title, artist)
     refresh()
     
     messagebox.showinfo("Pointlist", f"Removed: {title}")
@@ -805,9 +806,66 @@ def do_genre():
 
 
     make_btn(win, "▶ Play a Song", play_from_genre).pack(pady=10)
+    
+
+
+def do_recommended():
+    recs=recommended_songs(playlist)
+    
+    if recs is None:
+        messagebox.showerror("Pointlist", "Play some songs first so we can learn your taste.")
+        return
+
+    songs=recs[0]
+    top_genre=recs[1]
+
+    win=tk.Toplevel(window)
+    win.title("Recommended")
+    win.geometry("700x400")
+    win.configure(bg=BG)
+
+    tk.Label(win, text=f"Because you love {top_genre}", bg=BG, fg=ACCENT, font=FONT_HEAD).pack(pady=10)
+
+    frame=tk.Frame(win, bg=BG)
+    frame.pack(fill="both", expand=True, padx=15)
+
+    nodes=[]
+    number=1
+    
+    for current in songs:
+        
+        song=current["data"]
+        mins=song["duration"]//60
+        secs=song["duration"]%60
+        duration=f"{mins}:{secs:02d}"
+        
+        text=(f"  {number}.  {song['title']:<38}{duration:<7}🎵 {song['play_count']}")
+        
+        if number%2==0:
+            tk.Label(frame, text=text, bg=ROW_A, fg=TEXT, font=FONT_NOW, anchor="w", padx=6, pady=5).pack(fill="x")
+            
+        else:
+            tk.Label(frame, text=text, bg=ROW_B, fg=TEXT, font=FONT_NOW, anchor="w", padx=6, pady=5).pack(fill="x")
+                
+        nodes.append(current)
+        number+=1
+
+    def play_recommended():
+        
+        num=simpledialog.askinteger("Pointlist", "Enter song number to play:", parent=win)
+        
+        if num is None or num<1 or num>len(nodes):
+            return
+        
+        win.destroy()
+        _play_node(nodes[num-1])
+
+    make_btn(win, "▶ Play a Song", play_recommended).pack(pady=10)
+
 
 artist_menu.add_command(label="Get Artist Songs", command=do_artist)
 artist_menu.add_command(label="Get Genre Songs", command=do_genre)
+artist_menu.add_command(label="Recommended", command=do_recommended)
 
 
 
