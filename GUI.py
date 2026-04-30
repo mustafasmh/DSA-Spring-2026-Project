@@ -35,10 +35,12 @@ ROW_B="#111111"
 NOW_BG="#111111"
 FONT_MAIN=("Courier New", 11)
 FONT_HEAD=("Courier New", 13, "bold")
+FONT_HEADER=("Courier New", 20, "bold")
 FONT_STATS_HEAD=("Courier New", 12, "bold")
 FONT_STATS=("Courier New", 12, "bold")
 FONT_NOW=("Courier New", 10)
 FONT_TIME=("Courier New", 28, "bold")
+FONT_EMPTY=("Courier New", 13)
 
 
 
@@ -136,13 +138,13 @@ window.resizable(True, True)
 
 header=tk.Frame(window, bg=BG, pady=10)
 header.pack(fill="x", padx=20)
-tk.Label(header, text="◈ POINTLIST", bg=BG, fg=ACCENT, font=("Courier New", 20, "bold")).pack(side="left")
+tk.Label(header, text="◈ POINTLIST", bg=BG, fg=ACCENT, font=FONT_HEADER).pack(side="left")
 
 
 
 # dropdown menu bar 
 
-menubar=tk.Menu(window, bg=SIDEBAR, fg=TEXT, activebackground=ACCENT, activeforeground=BG, font=FONT_MAIN, bd=0, tearoff=0)
+menubar=tk.Menu(window, tearoff=0)
 window.config(menu=menubar)
 
 playlist_menu=tk.Menu(menubar, bg=SIDEBAR, fg=TEXT, activebackground=ACCENT, activeforeground=BG, font=FONT_MAIN, tearoff=0)
@@ -193,13 +195,10 @@ now_label.pack(pady=(2, 4))
 ctrl_frame=tk.Frame(now_bar, bg=NOW_BG)
 ctrl_frame.pack()
 
-def keep_flat(event):
-    event.widget.config(relief="flat")
+
 
 def make_btn(parent, text, cmd):
     btn=tk.Button(parent, text=text, command=cmd, bg=SIDEBAR, fg=TEXT, activebackground=ACCENT, activeforeground=BG, font=FONT_MAIN, relief="flat", padx=14, pady=4, cursor="hand2", takefocus=0)
-    btn.bind("<ButtonPress-1>", keep_flat)
-    btn.bind("<ButtonRelease-1>", keep_flat)
     return btn
 
 
@@ -216,17 +215,10 @@ def give_song_stats():
     
     songs=list(songs)
     
-    artists=top_three_artists(playlist)
-    
-    if artists is None:
-        messagebox.showerror("Pointlist", "Not enough artists played. Play songs from at least 3 different artists first.")
-        return
-    
-    artists=list(artists)
 
     statwin=tk.Toplevel(window)
     statwin.title("Top Songs")
-    statwin.geometry("800x320")
+    statwin.geometry("900x320")
     statwin.configure(bg=BG)
 
     tk.Label(statwin, text="Your Top 3 Songs", bg=BG, fg=ACCENT, font=FONT_HEAD).pack(pady=(16, 10))
@@ -268,7 +260,7 @@ def give_artist_stats():
 
     astatwin=tk.Toplevel(window)
     astatwin.title("Top Artists")
-    astatwin.geometry("800x320")
+    astatwin.geometry("900x320")
     astatwin.configure(bg=BG)
 
     tk.Label(astatwin, text="Your Top 3 Artists", bg=BG, fg=ACCENT, font=FONT_HEAD).pack(pady=10)
@@ -339,20 +331,20 @@ def give_genre_stats():
 
 def time_spent():
     
-    gstatwin=tk.Toplevel(window)
-    gstatwin.title("Time Spent")
-    gstatwin.geometry("500x180")
-    gstatwin.configure(bg=BG)
+    timestatwin=tk.Toplevel(window)
+    timestatwin.title("Time Spent")
+    timestatwin.geometry("500x180")
+    timestatwin.configure(bg=BG)
 
     minutes=listening_minutes(playlist)
 
-    gstatframe=tk.Frame(gstatwin, bg=BG)
-    gstatframe.pack(expand=True)
+    timestatframe=tk.Frame(timestatwin, bg=BG)
+    timestatframe.pack(expand=True)
 
 
-    tk.Label(gstatframe, text="You spent a total of", bg=BG, fg=STATTEXT, font=FONT_STATS).pack()
-    tk.Label(gstatframe, text=f"{minutes} minutes", bg=BG, fg=ACCENT, font=FONT_TIME).pack()
-    tk.Label(gstatframe, text="being pointlist.", bg=BG, fg=STATTEXT, font=FONT_STATS).pack()
+    tk.Label(timestatframe, text="You spent a total of", bg=BG, fg=STATTEXT, font=FONT_STATS).pack()
+    tk.Label(timestatframe, text=f"{minutes} minutes", bg=BG, fg=ACCENT, font=FONT_TIME).pack()
+    tk.Label(timestatframe, text="being pointlist.", bg=BG, fg=STATTEXT, font=FONT_STATS).pack()
 
 
 
@@ -375,7 +367,7 @@ def refresh():
 
 
     if playlist["size"]==0:
-        tk.Label(list_frame, text="Playlist is empty", bg=BG, fg=SUBTEXT, font=FONT_MAIN).pack(pady=20)
+        tk.Label(list_frame, text="Playlist is empty", bg=BG, fg=STATTEXT, font=FONT_EMPTY).pack(pady=20)
         return
 
 
