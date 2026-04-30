@@ -161,7 +161,7 @@ This allows O(n) traversal for finding all songs by a specific artist or genre w
 
 ## 🎵 Sample Songs Included
 
-The project comes pre-loaded with songs from various genres:
+The project comes pre-loaded with songs from various genres/artists:
 - **Rock**: Led Zeppelin, John Mayer
 - **Metal**: Tool, Opeth
 - **Jazz**: Miles Davis, Emily Remler, Yussef Dayes
